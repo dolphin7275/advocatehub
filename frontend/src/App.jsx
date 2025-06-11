@@ -11,6 +11,9 @@ import AdvocateWelcome from './advocateSection/pages/AdvocateWelcome.jsx';
 import AdvocateLogin from './advocateSection/components/AdvocateLogin.jsx';
 import AdvocateSignup from './advocateSection/components/AdvocateSignup.jsx';
 import AdvocateDashboard from './advocateSection/pages/AdvocateDashboard.jsx';
+import Admin from './adminSection/Admin.jsx';
+import AdminLogin from './adminSection/AdminLogin.jsx';
+import AdminDashboard from './adminSection/AdminDashboard.jsx';
 
 
 const router = createBrowserRouter(
@@ -35,37 +38,61 @@ const router = createBrowserRouter(
     },
     {
       path: "/client",
-      element: <ClientWelcome /> ,
+      element: 
+        <div>
+          <Navbar />
+          <ClientWelcome />
+          <Footer />
+        </div>,
       children: [
         {
-          path: "/client/signup",
+          path: "signup",
           element: <ClientSignup />
         },
         {
-          path: "/client/login",
+          path: "login",
           element: <ClientLogin />
         },
         {
-          path: "/client/dashboard",
+          path: "dashboard",
           element: <ClientDashboard />
         }
       ]
     }, 
     {
       path: "/advocate",
-      element: <AdvocateWelcome />,
+      element: 
+        <div>
+          <Navbar />
+          <AdvocateWelcome />
+          <Footer />
+        </div>,
       children: [
         {
-          path: "/advocate/signup",
+          path: "signup",
           element: <AdvocateSignup />
         },
         {
-          path: "/advocate/login",
+          path: "login",
           element: <AdvocateLogin />
         },
         {
-          path: "/advocate/dashboard",
+          path: "dashboard",
           element: <AdvocateDashboard />
+        }
+      ]
+    }, 
+    {
+      path: "/admin",
+      element: <Admin />,
+      children: [
+        {
+          path: "login",
+          element: <AdminLogin />
+        },
+        { 
+          path: "dashboard",
+          element: <AdminDashboard />
         }
       ]
     }

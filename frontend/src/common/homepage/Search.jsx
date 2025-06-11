@@ -1,4 +1,5 @@
 import React from 'react'
+import Assets from '../../assets/assets'
 
 const Search = () => {
   return (
@@ -10,7 +11,7 @@ const Search = () => {
           {/* Card 1 */}
           <div className="flex flex-col items-center">
             <img
-              src="/search-lawyer.png"
+              src={Assets.searchLawyer}
               alt="Search Lawyer"
               className="w-20 h-20 mb-4"
             />
@@ -24,7 +25,7 @@ const Search = () => {
           {/* Card 2 */}
           <div className="flex flex-col items-center">
             <img
-              src="book-lawyer.png"
+              src={Assets.bookLawyer}
               alt="Book Lawyer"
               className="w-20 h-20 mb-4"
             />
@@ -38,7 +39,7 @@ const Search = () => {
           {/* Card 3 */}
           <div className="flex flex-col items-center">
             <img
-              src="meet-lawyer.png"
+              src={Assets.meetLawyer}
               alt="Meet Lawyer"
               className="w-20 h-20 mb-4"
             />

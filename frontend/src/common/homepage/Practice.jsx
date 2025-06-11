@@ -1,13 +1,14 @@
 import React from 'react'
+import Assets from '../../assets/assets';
 
 const Practice = () => {
 
   const items = [
-    { icon: "/icons/property-cases.png", title: "Property Cases" },
-    { icon: "/icons/criminal-defense.png", title: "Criminal Defense" },
-    { icon: "/icons/spousal-issuses.png", title: "Spousal Issues" },
-    { icon: "/icons/legal-defense.png", title: "Legal Cases" },
-    { icon: "/icons/business-law.png", title: "Business law" },
+    { icon: Assets.propertyCases, title: "Property Cases" },
+    { icon: Assets.criminalDefense, title: "Criminal Defense" },
+    { icon: Assets.spousalIssues, title: "Spousal Issues" },
+    { icon: Assets.legalDefense, title: "Legal Cases" },
+    { icon: Assets.businessLaw, title: "Business law" },
   ];
 
 
