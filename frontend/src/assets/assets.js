@@ -6,6 +6,10 @@ import meetLawyer from './images/meet-lawyer.png';
 import propertyCases from './images/property-cases.png';
 import searchLawyer from './images/search-lawyer.png';
 import spousalIssues from './images/spousal-issues.png';
+import avatarImage from './images/avatarImage.jpg';
+import logo from './images/logo.png';
+import logoIcon from './images/logo-icon.png';
+import logoText from './images/logo-text.png';
 
 const Assets = {
     bookLawyer,
@@ -15,7 +19,11 @@ const Assets = {
     meetLawyer,
     propertyCases,
     searchLawyer,
-    spousalIssues
+    spousalIssues,
+    avatarImage,
+    logo,
+    logoIcon,
+    logoText
 }
 
 
