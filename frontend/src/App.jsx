@@ -95,7 +95,12 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: <Admin />,
+    element: (
+      <div>
+        <Navbar />
+        <Admin />
+      </div>
+    ),
     children: [
       {
         path: "login",
@@ -104,11 +109,17 @@ const router = createBrowserRouter([
       {
         path: "dashboard",
         element: <AdminDashboard />,
+        // children: [
+        //   {
+        //     path: "info",
+        //     element: <AdvocateInfo />
+        //   },
+        // ]
       },
       {
         path: "info",
-        element: <AdvocateInfo />,
-      },
+        element: <AdvocateInfo />
+      }
     ],
   },
 ]);

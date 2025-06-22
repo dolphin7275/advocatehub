@@ -10,6 +10,7 @@ import avatarImage from './images/avatarImage.jpg';
 import logo from './images/logo.png';
 import logoIcon from './images/logo-icon.png';
 import logoText from './images/logo-text.png';
+import immigration from './images/immigration.png';
 
 const Assets = {
     bookLawyer,
@@ -23,7 +24,8 @@ const Assets = {
     avatarImage,
     logo,
     logoIcon,
-    logoText
+    logoText,
+    immigration
 }
 
 

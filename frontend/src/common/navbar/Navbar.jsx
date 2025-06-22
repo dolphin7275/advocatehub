@@ -9,24 +9,23 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-row justify-between items-center bg-[#f0d8ae] shadow-md p-4">
+    <div className="flex flex-row justify-between items-center bg-[#eeebe6] shadow-md p-4">
       
       {/* Logo */}
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-row gap-2 cursor-pointer">
         <img className="w-12 h-12 mt-2 ml-6" src={Assets.logoIcon} alt="logo" />
         <img className="h-8 mt-4" src={Assets.logoText} alt="text" />
       </div>
-
 
 
       {/* Links */}
       <div>
         <ul className="flex flex-row gap-10 mr-6">
           <li>
-            <NavLink to="/" className='text-xl font-semibold p-3 rounded-[100%] hover:bg-[#c9a66c]'> Home </NavLink> 
+            <NavLink to="/" className='text-xl font-semibold p-3 rounded-[10px] hover:bg-[#c9a66c]'> Home </NavLink> 
           </li>
           <li>
-            <NavLink to="/advocate-list" className='text-xl font-semibold p-3 rounded-[100%] hover:bg-[#c9a66c]'> Listing </NavLink>
+            <NavLink to="/advocate-list" className='text-xl font-semibold p-3 rounded-[10px] hover:bg-[#c9a66c]'> Listing </NavLink>
           </li>
         </ul>
       </div>

@@ -5,7 +5,7 @@ import Search from './homepage/Search'
 import Practice from './homepage/Practice'
 import Featured from './homepage/Featured'
 import Testimonials from './homepage/Testimonials'
-import Request from './homepage/Request'
+import ContactUs from './homepage/ContactUs'
 
 
 const Home = () => {
@@ -17,7 +17,7 @@ const Home = () => {
         <Practice />
         <Featured />
         <Testimonials />
-        <Request />
+        <ContactUs />
     </>
   )
 }

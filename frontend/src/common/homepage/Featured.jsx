@@ -2,7 +2,7 @@ import React from 'react'
 
 const Featured = () => {
   return (
-    <div>
+    <div id='featured-lawyers' name='featured-lawyers'>
       Featured
     </div>
   )

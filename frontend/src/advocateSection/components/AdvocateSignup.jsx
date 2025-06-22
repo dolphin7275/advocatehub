@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+// import { useNavigate } from "react-router";
+// import api from '../../apiCalls/axios.js';
 
 const AdvocateSignup = () => {
   const [formData, setFormData] = useState({
@@ -21,6 +23,10 @@ const AdvocateSignup = () => {
     pricing: "",
   });
 
+  // const [error, setError] = useState('');
+  // const [loading, setLoading] = useState(false);
+  // const navigate = useNavigate();
+  
   const [passwordError, setPasswordError] = useState("");
 
   const handleChange = (e) => {
@@ -28,18 +34,62 @@ const AdvocateSignup = () => {
     setFormData({ ...formData, [name]: files ? files[0] : value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+    // setError(null);
+    // setLoading(true);
     setPasswordError("");
 
     if (formData.password !== formData.confirmPassword) {
       setPasswordError("Passwords do not match!");
+      // setLoading(false);
       return;
     }
 
-    console.log("Lawyer signup data:", formData);
-  };
+  //   data.append("username", formData.email); // required by backend
+  //   data.append("name", formData.fullName);
+  //   data.append("email", formData.email);
+  //   data.append("phone", formData.phoneNumber);
+  //   data.append("password", formData.password);
+  //   data.append("confirm_password", formData.confirmPassword);
+  //   data.append("role", "lawyer");
+
+  //   // ✅ Add remaining fields as-is
+  //   data.append("cnic", formData.cnic);
+  //   data.append("education", formData.education);
+  //   data.append("location", formData.location);
+  //   data.append("court_level", formData.courtLevel);
+  //   data.append("case_types", formData.caseTypes);
+  //   data.append("availability", formData.availability);
+  //   data.append("experience", formData.experience);
+  //   data.append("price", formData.pricing);
+  //   data.append("bar", formData.barCouncilCert);
+  //   data.append("aadhar", formData.aadhaarCard);
+  //   data.append("pan", formData.panCard);
+  //   data.append("degree", formData.additionalCert);
+  //   data.append("profile", formData.profilePicture);
+
+  //   try {
+  //     await api.post('/userapi/register/', data, {
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data',
+  //       },
+  //     });
+  //     navigate('/Advocate/login');
+  //   } catch (err) {
+  //     console.error(err);
+  //     if (err.response?.data) {
+  //       console.error('Backend response:', err.response.data);
+  //       setError(JSON.stringify(err.response.data));
+  //     } else {
+  //       setError('Registration failed.');
+  //     }
+  //   } 
+  //   finally {
+  //     setLoading(false);
+  //   }
+
+  // };
 
   return (
     <div className="min-h-screen bg-[#fceee0] p-6 font-sans flex flex-col items-center">
@@ -443,5 +493,6 @@ const AdvocateSignup = () => {
     </div>
   );
 };
+}
 
 export default AdvocateSignup;

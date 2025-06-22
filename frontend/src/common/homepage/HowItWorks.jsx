@@ -4,14 +4,13 @@ import React from 'react'
 function HowItWorks() {
 
   return (
-    <section className="bg-[#f6f0e8] py-12 px-4 text-center">
-      <h2 className="text-2xl md:text-3xl font-serif font-semibold text-gray-800 mb-4">
+    <section className="bg-[#eeebe6] py-12 px-4 text-center">
+      <h2 className="text-4xl font-semibold text-[#0d163d] mb-3">
         How it Works?
       </h2>
-      <p className="max-w-2xl mx-auto text-gray-700 text-sm md:text-base leading-relaxed">
-        Easily find legal guidance, book a trusted lawyer, or schedule a
-        consultation all in one platform. Clear, convenient, and designed to
-        make your legal journey stress-free.
+      <p className='max-w-3xl mx-auto text-[#cc8e2a] text-lg mb-8'>Connect with Verified Lawyers Across India.</p>
+      <p className="max-w-3xl mx-auto text-neutral-800 text-base">
+        Advocate Hub is your one-stop legal platform to find and connect with experienced lawyers instantly. Chat or video call to discuss your legal concerns—civil, criminal, family, or corporate—and get personalized solutions. No long waits, no confusion. Just trusted legal guidance made simple, fast, and accessible for everyone, everywhere in India.
       </p>
     </section>
   )

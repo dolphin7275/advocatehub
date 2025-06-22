@@ -13,25 +13,31 @@ const Practice = () => {
 
 
   return (
-    <section className="bg-[#f6f0e8] py-16 px-4 text-center font-sans">
-      <h2 className="text-2xl md:text-3xl text-gray-900 mb-2 font-serif">
-        Our Areas of <span className="text-[#b48a48] font-bold">Practice</span>
+    <section className="bg-[#eeebe6] py-16 px-4 text-center">
+      <h2 className="text-4xl font-bold text-[#0d163d] mb-4">
+        Our Areas of Practice
       </h2>
-      <p className="text-gray-700 text-sm md:text-base mb-12">
+      <p className="text-[#cc8e2a] text-lg mb-12">
         Taking any range of case for maintaining law.
       </p>
 
-      <div className="bg-[#0e1a3c] max-w-6xl mx-auto p-6 rounded-2xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 justify-items-center">
+      <div className="max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-4 md:grid-cols-3 gap-10">
         {items.map((item, idx) => (
           <div
             key={idx}
-            className="bg-[#d6b47a] w-40 h-40 rounded-xl flex flex-col items-center justify-center shadow-lg hover:scale-105 transition-transform duration-300"
+            className="bg-[#0e1a3c] p-10 rounded-[2rem] flex flex-col items-center transition-transform duration-300 hover:scale-105
+            "
           >
-            <img src={item.icon} alt={item.title} className="w-12 h-12 mb-3" />
-            <p className="text-white font-semibold text-sm text-center">{item.title}</p>
+            <div className="bg-gradient-to-b from-gray-100 to-gray-300 p-4 rounded-xl mb-6">
+              <img src={item.icon} alt={item.title} className="w-20 h-20" />
+            </div>
+            <h3 className="text-white font-bold text-xl text-center">
+              {item.title}
+            </h3>
           </div>
         ))}
       </div>
+      
     </section>
   )
 }

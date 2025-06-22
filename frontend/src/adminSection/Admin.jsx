@@ -6,7 +6,7 @@ import { Outlet } from 'react-router'
 const Admin = () => {
   return (
     <div>
-        Admin Page
+        {/* Admin Page */}
 
         <Outlet />
     </div>
