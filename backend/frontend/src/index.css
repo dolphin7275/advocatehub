@@ -1,0 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Cursive:wght@400..700&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Narnoor:wght@400;500;600;700;800&family=Ruwudu:wght@400;500;600;700&family=Savate:ital,wght@0,200..900;1,200..900&display=swap');
+@import "tailwindcss";
+
+body {
+  font-family: "Josefin Sans", sans-serif;
+  font-style: normal;
+}
+
+/* html {
+  scroll-behavior: smooth;
+} */
