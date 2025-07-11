@@ -4,8 +4,6 @@ import { Outlet } from 'react-router'
 const AdvocateWelcome = () => {
   return (
     <div>
-      Advocate Welcome
-
       <Outlet />
     </div>
   )

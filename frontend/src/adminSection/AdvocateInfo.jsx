@@ -37,7 +37,7 @@ const AdvocateInfo = () => {
 
   const handleAction = async (id, action) => {
     try {
-      const csrfToken = getCsrfToken(); // ✅ now defined
+      const csrfToken = getCsrfToken(); 
       await api.post(
         `/userapi/${action}-lawyer/${id}/`,
         {},
@@ -49,7 +49,6 @@ const AdvocateInfo = () => {
         }
       );
       alert(`Lawyer ${action}d successfully`);
-      fetchAllLawyers();
     } catch (error) {
       console.error(`Failed to ${action} lawyer`, error);
       alert(`Failed to ${action} lawyer`);

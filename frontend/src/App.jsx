@@ -22,6 +22,7 @@ import WebsiteFeedbackSection from "./common/homepage/WebsiteFeedbackSection.jsx
 import AdminSignup from "./adminSection/AdminSignup.jsx";
 import ChatRoomWrapper from "./route/ChatRoomWrapper.jsx";
 import { AuthProvider } from "./common/AuthContext.jsx";
+import AdvocateWaiting from "./advocateSection/pages/AdvocateWaiting.jsx";
 
 
 const router = createBrowserRouter([
@@ -109,6 +110,10 @@ const router = createBrowserRouter([
       {
         path: "profile",
         element: <AdvocateProfile />
+      },
+      {
+        path: "waiting",
+        element: <AdvocateWaiting />
       }
     ],
   },
@@ -136,7 +141,7 @@ const router = createBrowserRouter([
       {
         path: "info",
         element: <AdvocateInfo />
-      }
+      },
     ],
   },
   {

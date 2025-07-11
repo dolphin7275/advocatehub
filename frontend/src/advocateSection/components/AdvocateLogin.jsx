@@ -76,9 +76,9 @@ const AdvocateLogin = () => {
         if (status === "approved") {
           navigate("/advocate/dashboard");
         } else if (status === "pending") {
-          navigate("/advocate");
+          navigate("/advocate/waiting");
         } else if (status === "rejected") {
-          navigate("/advocate");
+          navigate("/");
         } else {
           toast.error("Unknown profile status. Contact support.", {
             position: "top-right",

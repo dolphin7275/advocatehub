@@ -12,21 +12,48 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        // Only fetch user data if we have a token
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+
         const res = await api.get("/userapi/me/");
         setUser(res.data);
       } catch (error) {
         console.error("Auth fetch error:", error);
         setUser(null);
+        // If token is invalid, remove it from localStorage
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
       } finally {
-        setLoading(false); // update
+        setLoading(false);
       }
     };
 
     fetchUser();
   }, []);
 
+  const login = (userData, tokens) => {
+    setUser(userData);
+    if (tokens?.access) {
+      localStorage.setItem('accessToken', tokens.access);
+    }
+    if (tokens?.refresh) {
+      localStorage.setItem('refreshToken', tokens.refresh);
+    }
+  };
+
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+  };
+
   return (
-    <AuthContext.Provider value={{ user, setUser, loading }}>
+    <AuthContext.Provider value={{ user, setUser, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -83,7 +83,7 @@ const AdvocateSignup = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      navigate('/Advocate/login');
+      navigate('/advocate/login');
     } catch (err) {
       console.error(err);
       if (err.response?.data) {
