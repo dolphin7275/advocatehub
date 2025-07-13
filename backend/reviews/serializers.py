@@ -26,7 +26,7 @@ class ReviewReplySerializer(serializers.ModelSerializer):
         model = ReviewReply
         fields = ['id', 'lawyer_name', 'reply_text', 'created_at']
         read_only_fields = ['id', 'lawyer_name', 'created_at']
-
+    
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -58,8 +58,8 @@ class ReviewSerializer(serializers.ModelSerializer):
         # Check for existing review by this user for this lawyer
         if Review.objects.filter(user=user_for_validation, lawyer=lawyer_instance).exists():
             raise serializers.ValidationError("You have already submitted a review for this lawyer.")
-
-        review = Review.objects.create(lawyer=lawyer_instance, **validated_data) 
+        review = Review.objects.create(lawyer=lawyer_instance,user=user_for_validation,**validated_data)
+        # review = Review.objects.create(lawyer=lawyer_instance, **validated_data) 
         return review
 
     def update(self, instance, validated_data):

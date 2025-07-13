@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'chat',
     'channels',
     'videosession',
-  'website_feedback', 
+    'website_feedback',
+    'reviews', 
 
 
 ]
@@ -96,9 +97,9 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'AdvocateHub DB',
+        'NAME': 'Lawyer',
         "USER":'postgres',
-        'PASSWORD':'hello',
+        'PASSWORD':'postgres',
         'HOST':'localhost',
         'PORT':'5432',
     }

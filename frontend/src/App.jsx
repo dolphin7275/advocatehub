@@ -23,6 +23,7 @@ import AdminSignup from "./adminSection/AdminSignup.jsx";
 import ChatRoomWrapper from "./route/ChatRoomWrapper.jsx";
 import { AuthProvider } from "./common/AuthContext.jsx";
 import AdvocateWaiting from "./advocateSection/pages/AdvocateWaiting.jsx";
+import LawyerReviewSection from "./common/searchpage/LawyerReviewSection.jsx";
 
 
 const router = createBrowserRouter([
@@ -42,7 +43,7 @@ const router = createBrowserRouter([
       <div>
         <Navbar />
         <Outlet />
-        <WebsiteFeedbackSection />
+        <LawyerReviewSection />
         <Footer />
       </div>
     ),

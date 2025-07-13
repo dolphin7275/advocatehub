@@ -1,0 +1,165 @@
+
+@baseUrl = http://127.0.0.1:8000
+
+# Make sure this token is correct and doesn't have extra spaces or characters
+@clientJwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUyNDkyMDIxLCJpYXQiOjE3NTI0MDU2MjEsImp0aSI6ImY0ZmUxOWE3ZmE2MDQzMTc5ZWVmZTIyNzE5MWRjY2RmIiwidXNlcl9pZCI6Mn0.msDwDxZ5l-jq4COWNmvACDFECU6aJW23DOIpia10qkE
+@lawyerUserId = 1
+@lawyerJwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUyNDkxODA4LCJpYXQiOjE3NTI0MDU0MDgsImp0aSI6ImZjYWJjNzhhMDk0ZjQ3NzJhZTIxMTQ4YTZhZWI5MjM5IiwidXNlcl9pZCI6MX0.bGUhT0T3Vhog9A9u8g2Ee393aZo9auypx8d48doL_rQ
+@adminJwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUyNDkxODA4LCJpYXQiOjE3NTI0MDU0MDgsImp0aSI6ImZjYWJjNzhhMDk0ZjQ3NzJhZTIxMTQ4YTZhZWI5MjM5IiwidXNlcl9pZCI6MX0.bGUhT0T3Vhog9A9u8g2Ee393aZo9auypx8d48doL_rQ
+
+### CLIENT LOGIN
+POST {{baseUrl}}/userapi/login/
+Content-Type: application/json
+
+{
+    "username": "client1@gmail.com",
+    "password": "hari@1234"
+}
+
+### 1. Get JWT Token
+POST {{baseUrl}}/userapi/login/
+Content-Type: application/json
+
+{
+    "username": "hari",
+    "password": "hari@1234"
+}
+
+### 2. Create a New Review
+POST {{baseUrl}}/api/reviews/
+Content-Type: application/json
+Authorization: Bearer {{clientJwtToken}}
+
+{
+    "lawyer_id": {{lawyerUserId}},
+    "rating": 5,
+    "feedback": "This lawyer provided excellent and clear advice. Highly recommended for property cases!"
+}
+
+### 3. Create Another Review 
+# Use the same client user or a different client 
+POST {{baseUrl}}/api/reviews/
+Content-Type: application/json
+Authorization: Bearer {{clientJwtToken}}
+
+{
+    "lawyer_id": {{lawyerUserId}},
+    "rating": 4,
+    "feedback": "Very knowledgeable, but consultation started a bit late. Still good advice."
+}
+
+### 4. Get All Reviews for a Specific Lawyer 
+GET {{baseUrl}}/api/lawyers/{{lawyerUserId}}/reviews/
+Accept: application/json
+
+### 5. Get a Single Lawyer's Profile with Aggregated Review Data
+# This endpoint does not require authentication (AllowAny).
+GET {{baseUrl}}/api/lawyers/{{lawyerUserId}}/
+Accept: application/json
+
+### 6. Get a Specific Review by ID 
+# This endpoint requires authentication.
+GET {{baseUrl}}/api/reviews/6/ 
+Accept: application/json
+Authorization: Bearer {{clientJwtToken}}
+
+### 7. Update a Review 
+# Requires authentication by the user who created the review.
+PUT {{baseUrl}}/api/reviews/6/
+Content-Type: application/json
+Authorization: Bearer {{clientJwtToken}}
+
+{
+    "rating": 4,
+    "feedback": "Updated: Very knowledgeable, but consultation started a bit late. Still good advice!"
+}
+
+### 8. Delete a Review
+# Requires authentication by the user who created the review.
+DELETE {{baseUrl}}/api/reviews/5/
+Authorization: Bearer {{clientJwtToken}}
+
+
+
+### 9. Submit Website Feedback
+# Requires authentication.
+POST {{baseUrl}}/api/website-feedback/
+Content-Type: application/json
+Authorization: Bearer {{clientJwtToken}}
+
+{
+    "rating": 5,
+    "feedback_text": "The website is very user-friendly and the lawyer search is excellent!"
+}
+
+### 10. Get All Website Feedback
+GET {{baseUrl}}/api/website-feedback/
+Accept: application/json
+
+### 11. Get Specific Website Feedback by ID
+GET {{baseUrl}}/api/website-feedback/2/
+Accept: application/json
+Authorization: Bearer {{clientJwtToken}}
+
+### 12. Update Website Feedback 
+PUT {{baseUrl}}/api/website-feedback/2/
+Content-Type: application/json
+Authorization: Bearer {{clientJwtToken}}
+
+{
+    "rating": 4,
+    "feedback_text": "Updated: The website is great, but sometimes slow on mobile."
+}
+
+### 13. Delete Website Feedback 
+DELETE {{baseUrl}}/api/website-feedback/1/
+Authorization: Bearer {{clientJwtToken}}
+
+### 14. Lawyer Creates a Reply to a Review
+POST {{baseUrl}}/api/review-replies/
+Content-Type: application/json
+Authorization: Bearer {{lawyerJwtToken}}  
+
+{
+  "review": 3,
+  "reply_text": "Thank you for the kind feedback. Glad I could help!"
+}
+
+### 15. Get All Review Replies
+GET {{baseUrl}}/api/review-replies/
+Accept: application/json
+Authorization: Bearer {{lawyerJwtToken}}
+
+### 16. Get a Review Reply by ID
+GET {{baseUrl}}/api/review-replies/2/
+Accept: application/json
+Authorization: Bearer {{lawyerJwtToken}}
+
+### 17. Update a Review Reply
+PUT {{baseUrl}}/api/review-replies/1/
+Content-Type: application/json
+Authorization: Bearer {{lawyerJwtToken}}
+
+{
+  "reply_text": "Updated: Thanks! Let me know if you need anything else."
+}
+
+
+### 18. Delete a Review Reply
+DELETE {{baseUrl}}/api/review-replies/1/
+Authorization: Bearer {{lawyerJwtToken}}
+
+
+### Create a Reply to Website Feedback (Admin only)
+POST http://127.0.0.1:8000/api/website-feedback-replies/
+Content-Type: application/json
+Authorization: Bearer {{adminJwtToken}}
+
+{
+  "feedback": 2,
+  "reply_text": "Thanks for your kind words! We'll keep improving!"
+}
+
+### Get All Website Feedback Replies
+GET http://127.0.0.1:8000/api/website-feedback-replies/
+Authorization: Bearer {{adminJwtToken}}
