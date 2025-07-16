@@ -4,20 +4,6 @@ import { MdPending } from "react-icons/md";
 import { useLocation } from "react-router-dom";
 import api from '../apiCalls/axios'
 
-
-// ✅ CSRF token helper function
-const getCsrfToken = () => {
-  const name = "csrftoken";
-  const cookies = document.cookie.split(";");
-  for (let i = 0; i < cookies.length; i++) {
-    let cookie = cookies[i].trim();
-    if (cookie.startsWith(name + "=")) {
-      return cookie.substring(name.length + 1);
-    }
-  }
-  return "";
-};
-
 const AdvocateInfo = () => {
   const [activeLink, setActiveLink] = useState("All Profiles");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -37,22 +23,40 @@ const AdvocateInfo = () => {
 
   const handleAction = async (id, action) => {
     try {
-      const csrfToken = getCsrfToken(); // ✅ now defined
-      await api.post(
-        `/userapi/${action}-lawyer/${id}/`,
-        {},
-        {
-          headers: {
-            "X-CSRFToken": csrfToken,
-          },
-          withCredentials: true,
-        }
-      );
+      console.log(`Attempting to ${action} lawyer with ID:`, id);
+      
+      const response = await api.post(`/userapi/${action}-lawyer/${id}/`);
+      
+      console.log(`${action} response:`, response.data);
       alert(`Lawyer ${action}d successfully`);
-      fetchAllLawyers();
+      
+      // Optionally redirect back to dashboard or refresh data
+      // window.location.href = '/admin/dashboard';
+      
     } catch (error) {
-      console.error(`Failed to ${action} lawyer`, error);
-      alert(`Failed to ${action} lawyer`);
+      console.error(`Failed to ${action} lawyer:`, error);
+      
+      if (error.response) {
+        // Server responded with error status
+        console.error('Error response:', error.response.data);
+        console.error('Error status:', error.response.status);
+        
+        if (error.response.status === 403) {
+          alert(`Failed to ${action} lawyer: You don't have admin permissions`);
+        } else if (error.response.status === 404) {
+          alert(`Failed to ${action} lawyer: Lawyer not found`);
+        } else {
+          alert(`Failed to ${action} lawyer: ${error.response.data.error || 'Unknown error'}`);
+        }
+      } else if (error.request) {
+        // Request was made but no response received
+        console.error('No response received:', error.request);
+        alert(`Failed to ${action} lawyer: No response from server. Is the backend running?`);
+      } else {
+        // Something else happened
+        console.error('Error:', error.message);
+        alert(`Failed to ${action} lawyer: ${error.message}`);
+      }
     }
   };
 
@@ -222,5 +226,3 @@ const AdvocateInfo = () => {
 };
 
 export default AdvocateInfo;
-
-
