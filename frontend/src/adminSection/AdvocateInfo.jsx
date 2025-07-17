@@ -23,6 +23,7 @@ const AdvocateInfo = () => {
 
   const handleAction = async (id, action) => {
     try {
+
       console.log(`Attempting to ${action} lawyer with ID:`, id);
       
       const response = await api.post(`/userapi/${action}-lawyer/${id}/`);
@@ -30,9 +31,19 @@ const AdvocateInfo = () => {
       console.log(`${action} response:`, response.data);
       alert(`Lawyer ${action}d successfully`);
       
-      // Optionally redirect back to dashboard or refresh data
-      // window.location.href = '/admin/dashboard';
-      
+
+      const csrfToken = getCsrfToken(); 
+      await api.post(
+        `/userapi/${action}-lawyer/${id}/`,
+        {},
+        {
+          headers: {
+            "X-CSRFToken": csrfToken,
+          },
+          withCredentials: true,
+        }
+      );
+      alert(`Lawyer ${action}d successfully`);
     } catch (error) {
       console.error(`Failed to ${action} lawyer:`, error);
       

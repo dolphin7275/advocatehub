@@ -68,3 +68,21 @@ urlpatterns = [
     path('video/token/<int:booking_id>/', VideoChatAPIView.as_view(), name='get_video_token'),
 
 ]
+
+# Review Routes
+from rest_framework.routers import DefaultRouter
+from django.urls import include
+from reviews.views import (
+    ReviewViewSet, ReviewReplyViewSet,
+    LawyerReviewsAPIView, LawyerDetailWithReviewsAPIView
+)
+
+router = DefaultRouter()
+router.register(r'reviews', ReviewViewSet)
+router.register(r'review-replies', ReviewReplyViewSet)
+
+urlpatterns += [
+    path('lawyers/<int:lawyer_id>/reviews/', LawyerReviewsAPIView.as_view(), name='lawyer-reviews'),
+    path('lawyers/<int:lawyer_id>/', LawyerDetailWithReviewsAPIView.as_view(), name='lawyer-detail-with-reviews'),
+    path('', include(router.urls)),
+]
