@@ -43,7 +43,6 @@ const router = createBrowserRouter([
       <div>
         <Navbar />
         <Outlet />
-        <LawyerReviewSection />
         <Footer />
       </div>
     ),

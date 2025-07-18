@@ -72,68 +72,112 @@ const AdvocateInfo = () => {
   };
 
   return (
-    <div className="min-h-screen text-sm bg-[#141f52] relative">
+    <div className="relative min-h-screen text-white bg-[#6E7582]">
 
       {/* Toggle Button */}
       <button
-        className="text-white absolute top-4 left-4 z-50"
+        className="absolute top-4 left-4 z-50"
         onClick={() => setSidebarOpen(!sidebarOpen)}
       >
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        <svg
+          className="w-8 h-8"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
         </svg>
       </button>
 
       <div className="flex">
         {/* Sidebar */}
         <aside
-          className={`
-            absolute top-0 left-0 z-40 bg-[#0D163D] w-64 h-full text-white p-4 shadow-lg space-y-4
-            transition-transform duration-300 ease-in-out
-            ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-          `}
-        >
-          {/* Close Button */}
-          <div className="flex justify-end">
-            <button onClick={() => setSidebarOpen(false)}>
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-
-          <ul className="space-y-6 pl-2 mt-2">
-            <li>
-              <button onClick={() => { setActiveLink("All Profiles"); setSidebarOpen(false); }} className="flex items-center gap-2 px-2 py-2 rounded hover:bg-[#1e2c3c] transition">
-                <span>All Profiles</span>
-              </button>
-            </li>
-            <li>
-              <button onClick={() => { setActiveLink("Pending Profiles"); setSidebarOpen(false); }} className="flex items-center gap-2">
-                <span>Pending Profiles</span>
-                <MdPending className="text-yellow-400" />
-              </button>
-            </li>
-            <li>
-              <button onClick={() => { setActiveLink("Approved Profiles"); setSidebarOpen(false); }} className="flex items-center gap-2">
-                <span>Approved Profiles</span>
-                <FaCheckCircle className="text-green-400" />
-              </button>
-            </li>
-            <li>
-              <button onClick={() => { setActiveLink("Rejected Profiles"); setSidebarOpen(false); }} className="flex items-center gap-2">
-                <span>Rejected Profiles</span>
-                <FaTimesCircle className="text-red-500" />
-              </button>
-            </li>
-            <li>
-              <button className="flex items-center gap-2">
-                <span>Logout</span>
-                <FaSignOutAlt className="text-blue-400" />
-              </button>
-            </li>
-          </ul>
-        </aside>
+                className={`absolute top-0 left-0 z-40 bg-[#8C2B32] w-64 h-full text-white p-4 shadow-lg space-y-4
+                transition-transform duration-300 ease-in-out
+                ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
+              >
+                <div className="flex justify-end">
+                  <button onClick={() => setSidebarOpen(false)}>
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+        
+                <ul className="space-y-6 pl-2 mt-2">
+                  <li>
+                    <button
+                      onClick={() => {
+                        setActiveLink("All Profiles");
+                        setSidebarOpen(false);
+                      }}
+                      className="flex items-center gap-2 px-2 py-2 rounded hover:bg-[#A23C3F]"
+                    >
+                      <span>All Profiles</span>
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => {
+                        setActiveLink("Pending Profiles");
+                        setSidebarOpen(false);
+                      }}
+                      className="flex items-center gap-2"
+                    >
+                      <span>Pending Profiles</span>
+                      <MdPending className="text-yellow-400" />
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => {
+                        setActiveLink("Approved Profiles");
+                        setSidebarOpen(false);
+                      }}
+                      className="flex items-center gap-2"
+                    >
+                      <span>Approved Profiles</span>
+                      <FaCheckCircle className="text-green-400" />
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => {
+                        setActiveLink("Rejected Profiles");
+                        setSidebarOpen(false);
+                      }}
+                      className="flex items-center gap-2"
+                    >
+                      <span>Rejected Profiles</span>
+                      <FaTimesCircle className="text-red-500" />
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className="flex items-center gap-2 text-red-400"
+                      onClick={() => setLogoutConfirm(true)}
+                    >
+                      <span>Logout</span>
+                      <FaSignOutAlt />
+                    </button>
+                  </li>
+                </ul>
+              </aside>
 
         {/* Client Info */}
         {/* Personal & Practice + KYC side by side */}
@@ -143,7 +187,7 @@ const AdvocateInfo = () => {
     {/* Left: Personal + Practice Info */}
     <div className="flex-1 space-y-6">
       {/* Personal Info */}
-      <section className="bg-[#e8d6b5] p-6 rounded-lg shadow-md">
+      <section className="bg-[#8C2B32] p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-bold mb-4">Personal Information</h2>
         <div className="flex items-start gap-6">
           {profile.user_profile && (
@@ -165,7 +209,7 @@ const AdvocateInfo = () => {
       </section>
 
       {/* Practice Info */}
-      <section className="bg-[#e8d6b5] p-6 rounded-lg shadow-md">
+      <section className="bg-[#8C2B32] p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-bold mb-4">Practice Information</h2>
         <p className='capitalize'><strong>Location:</strong> {profile.location}</p>
         <p><strong>Experience:</strong> {profile.experience}</p>
@@ -174,7 +218,7 @@ const AdvocateInfo = () => {
     </div>
 
     {/* Right: KYC Documents */}
-    <section className="bg-[#e8d6b5] p-6 rounded-lg shadow-md w-full lg:w-1/3">
+    <section className="bg-[#8C2B32] p-6 rounded-lg shadow-md w-full lg:w-1/3">
   <h2 className="text-xl font-bold mb-4">KYC Upload</h2>
   {profile ? (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">

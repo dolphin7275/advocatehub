@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from "../apiCalls/axios"
+import api from "../apiCalls/axios";
 
 const AdminLogin = () => {
   const [username, setUsername] = useState('');
@@ -44,83 +44,92 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="flex min-h-screen">
-      <div
-        className="flex-1 bg-cover bg-center flex flex-col justify-center items-center p-5"
-        style={{
-          backgroundImage:
-            "",
-        }}
-      >
-        <div className="flex items-center space-x-2 mb-4">
-          <span className="text-5xl font-bold text-black leading-none">
-            ADVOCATE
-          </span>
-          <span className="text-5xl font-bold text-[#C8A165] leading-none">
-            HUB
-          </span>
+    <div className="flex min-h-screen bg-[#6E7582] text-white">
+      {/* Left Section */}
+      <div className="flex-1 flex flex-col justify-center items-center p-8">
+        <div className="text-center">
+          <h1 className="text-5xl font-extrabold">
+            <span className="text-black">ADVOCATE</span>{' '}
+            <span className="text-[#8C2B32]">HUB</span>
+          </h1>
+          <p className="mt-4 text-white text-lg italic">Seek for the truth</p>
         </div>
-        <p className="text-black text-lg">Seek for the truth</p>
       </div>
 
-      <div className="flex-1 flex flex-col justify-center p-16 bg-[#0d163d]">
-        <form onSubmit={handleLogin} className="w-full max-w-md mx-auto">
-          <h2 className="text-left text-3xl mb-8 font-bold text-[#fff0d7]">
-            Log in
+      {/* Right Section */}
+      <div className="flex-1 flex flex-col justify-center p-12 md:p-20 bg-[#6E7582]">
+        <form
+          onSubmit={handleLogin}
+          className="w-full max-w-md mx-auto bg-transparent"
+        >
+          <h2 className="text-3xl font-bold mb-8 text-[#8C2B32]">
+            ADMIN LOGIN
           </h2>
 
           <div className="mb-5">
-            <label className="block font-semibold mb-2 text-[#fff0d7]">Email</label>
+            <label className="block font-semibold mb-2">Email</label>
             <input
-              type="username"
-              name="text"
-              placeholder="Enter your email"
+              type="text"
+              placeholder="username@gmail.com"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              className="w-full p-3 border-none rounded-md bg-white text-sm shadow-md focus:outline-none focus:ring-2 focus:ring-[#004d32]"
+              className="w-full p-3 rounded-md bg-white text-black shadow-md focus:outline-none"
             />
           </div>
 
           <div className="mb-5">
-            <label className="block text-[#fff0d7] font-semibold mb-2">Password</label>
+            <label className="block font-semibold mb-2">Password</label>
             <input
               type="password"
-              name="password"
-              placeholder="Enter your password"
+              placeholder=""
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full p-3 border-none rounded-md bg-white text-sm shadow-md focus:outline-none focus:ring-2 focus:ring-[#004d32]"
+              className="w-full p-3 rounded-md bg-white text-black shadow-md focus:outline-none"
             />
           </div>
-          
-          
-          {error && <div className="text-red-600 text-sm font-medium">{error}</div>}
 
-
-
-          {/* <div className="text-right mb-5">
-            <a
-              href="/forgot-password"
-              className="text-xs text-gray-700 hover:underline"
-            >
+          <div className="text-right text-sm mb-4">
+            <a href="/forgot-password" className="text-white hover:underline">
               Forgot Password?
             </a>
-          </div> */}
+          </div>
+
+          {error && (
+            <div className="text-red-300 text-sm font-medium mb-4">{error}</div>
+          )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 px-4 bg-[#0c1a49] hover:bg-blue-800 text-white rounded-md font-semibold transition"
+            className="w-full py-2 bg-[#8C2B32] hover:bg-red-800 text-white rounded-md font-bold text-lg transition"
           >
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? 'Logging in...' : 'LOGIN'}
           </button>
+
+          <div className="mt-8 text-center text-sm">
+  <p className="text-base font-medium">Don't have an account?</p>
+  <div className="mt-4 space-x-6">
+    <a
+      href="/client/signup"
+      className="text-[#8C2B32] text-xl font-bold"
+    >
+      Sign up as Client
+    </a>
+    <a
+      href="/advocate/signup"
+      className="text-[#8C2B32] text-xl font-bold"
+    >
+      Sign up as Advocate
+    </a>
+  </div>
+</div>
 
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AdminLogin
+export default AdminLogin;

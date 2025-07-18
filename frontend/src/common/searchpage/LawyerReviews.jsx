@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from 'react';
 import api from '../../apiCalls/axios';
 
@@ -99,7 +97,7 @@ const LawyerReviews = ({ lawyerUserId, averageRating, reviewCount }) => {
   if (error) return <div className="p-4 text-center text-sm text-red-600">{error}</div>;
 
   return (
-    <div className="bg-[#f1d2a9] rounded-xl shadow-lg p-6 mt-6">
+    <div className="bg-[#C4A552] rounded-xl shadow-lg p-6 mt-6">
       <h3 className="text-lg font-bold text-[#0a043c] mb-3">Rating & Reviews</h3>
       <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
         {/* Average Rating */}
