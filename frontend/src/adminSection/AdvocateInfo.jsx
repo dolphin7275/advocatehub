@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FaCheckCircle, FaTimesCircle, FaSearch, FaSignOutAlt } from "react-icons/fa";
 import { MdPending } from "react-icons/md";
 import { useLocation } from "react-router-dom";
-import api from '../apiCalls/axios'
+import api from '../apiCalls/axios.js';
 
 const AdvocateInfo = () => {
   const [activeLink, setActiveLink] = useState("All Profiles");

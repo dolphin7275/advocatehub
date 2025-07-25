@@ -9,7 +9,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-row justify-between items-center bg-[#1A1F2B] shadow-md p-4">
+    <div className="flex flex-row justify-between items-center bg-[#010922] shadow-md p-4">
       
       {/* Logo */}
       <div className="flex flex-row gap-2 cursor-pointer">
@@ -39,19 +39,19 @@ const Navbar = () => {
         <div className="relative">
           <button
             onClick={() => setOpenC(!openC)}
-            className="bg-[#C4A552] text-[#F8F8F5] text-md font-semibold px-10 py-2 rounded-md hover:scale-105 cursor-pointer"
+            className="bg-[#aad9d9] text-[#010922] text-md font-semibold px-10 py-2 rounded-md hover:scale-105 cursor-pointer"
           >
             CLIENT
           </button>
 
           {openC && (
-            <div className="absolute top-12 left-0 px-6 bg-[#F8F8F5] shadow-md rounded-md p-3 z-20">
+            <div className="absolute top-12 left-0 px-6 bg-[#aad9d9] shadow-md rounded-md p-3 z-20">
               <button
                 onClick={() => {
                   navigate("/client/signup");
                   setOpenC(false);
                 }}
-                className="block w-full text-left px-4 py-2 font-semibold hover:bg-[#C4A552] hover:text-[#F8F8F5] rounded-sm cursor-pointer"
+                className="block w-full text-left px-4 py-2 font-semibold hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer"
               >
                 SignUp
               </button>
@@ -60,7 +60,7 @@ const Navbar = () => {
                   navigate("/client/login");
                   setOpenC(false);
                 }}
-                className="block w-full text-left px-4 py-2 font-semibold hover:bg-[#C4A552] hover:text-[#F8F8F5] rounded-sm cursor-pointer"
+                className="block w-full text-left px-4 py-2 font-semibold hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer"
               >
                 Login
               </button>
@@ -72,19 +72,19 @@ const Navbar = () => {
         <div className="relative">
           <button
             onClick={() => setOpenA(!openA)}
-            className="bg-[#C4A552] text-[#F8F8F5] text-md font-semibold px-6 py-2 rounded-md cursor-pointer hover:scale-105"
+            className="bg-[#aad9d9] text-[#010922] text-md font-semibold px-6 py-2 rounded-md cursor-pointer hover:scale-105"
           >
             ADVOCATE
           </button>
 
           {openA && (
-            <div className="absolute top-12 left-0 px-5 bg-[#F8F8F5] shadow-md rounded-md p-3 z-20">
+            <div className="absolute top-12 left-0 px-5 bg-[#aad9d9] shadow-md rounded-md p-3 z-20">
               <button
                 onClick={() => {
                   navigate("/advocate/signup");
                   setOpenA(false);
                 }}
-                className="block w-full font-semibold text-left px-4 py-2 hover:bg-[#C4A552] hover:text-[#F8F8F5] rounded-sm cursor-pointer"
+                className="block w-full font-semibold text-left px-4 py-2 hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer"
               >
                 SignUp
               </button>
@@ -93,7 +93,7 @@ const Navbar = () => {
                   navigate("/advocate/login");
                   setOpenA(false);
                 }}
-                className="block w-full font-semibold text-left px-4 py-2 hover:bg-[#C4A552] hover:text-[#F8F8F5] rounded-sm cursor-pointer"
+                className="block w-full font-semibold text-left px-4 py-2 hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer"
               >
                 Login
               </button>
