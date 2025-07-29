@@ -6,6 +6,7 @@ import Practice from './homepage/Practice'
 import Featured from './homepage/Featured'
 import Testimonials from './homepage/Testimonials'
 import ContactUs from './homepage/ContactUs'
+import WebsiteFeedbackSection from './homepage/WebsiteFeedbackSection'
 
 
 const Home = () => {
@@ -17,6 +18,7 @@ const Home = () => {
         <Practice />
         <Featured />
         <Testimonials />
+        <WebsiteFeedbackSection/>
         <ContactUs />
     </>
   )
