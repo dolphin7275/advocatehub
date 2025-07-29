@@ -13,7 +13,8 @@ from rest_framework.serializers import ValidationError
 
 from .models import Review, ReviewReply
 from lawyerapi.models import Lawyer 
-from .serializers import ReviewSerializer, LawyerSerializerForReviews, ReviewReplySerializer
+from .serializers import ReviewSerializer, ReviewReplySerializer
+from advocateshub.serializers import LawyerSerializer
 
 User = get_user_model()
 
@@ -104,5 +105,5 @@ class LawyerDetailWithReviewsAPIView(APIView):
         except Lawyer.DoesNotExist:
             return Response({"detail": "Lawyer profile not found."}, status=status.HTTP_404_NOT_FOUND)
         
-        serializer = LawyerSerializerForReviews(lawyer_instance)
+        serializer = LawyerSerializer(lawyer_instance)
         return Response(serializer.data, status=status.HTTP_200_OK)

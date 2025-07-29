@@ -73,7 +73,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('POSTGRES_DB', 'Advocates'),
         'USER': os.getenv('POSTGRES_USER', 'postgres'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'Sonu@123'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'Sonu*366'),
         'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
         'PORT': os.getenv('POSTGRES_PORT', '5432'),
     }
@@ -146,7 +146,7 @@ CHANNEL_LAYERS = {
     },
 }
 
-# Twilio credentials
+# # Twilio credentials
 TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
 TWILIO_API_KEY = os.getenv('TWILIO_API_KEY')
 TWILIO_API_SECRET = os.getenv('TWILIO_API_SECRET')

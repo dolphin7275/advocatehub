@@ -53,7 +53,7 @@ const AdvocateCard = () => {
 
     try {
       await api.post('/userapi/book/', {
-        lawyer_id: id,
+        lawyer_id: lawyer.id,  // ✅ not lawyer.user.id
         mode,
         location,
         duration,

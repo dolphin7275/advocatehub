@@ -20,7 +20,8 @@ from .views import (
     ChatHistoryAPI,
 
     #videoSession
-    VideoChatAPIView
+    # VideoChatAPIView
+    VideoTokenCreateAPIView,VideoTokenRetrieveAPIView,
 
     
 )
@@ -65,7 +66,10 @@ urlpatterns = [
     path('history/<int:booking_id>/', ChatHistoryAPI.as_view(), name='chat-history'),
 
     #videosession
-    path('video/token/<int:booking_id>/', VideoChatAPIView.as_view(), name='get_video_token'),
+    # path('video/token/<int:booking_id>/', VideoChatAPIView.as_view(), name='get_video_token'),
+    #videosession
+    path('video/token/', VideoTokenCreateAPIView.as_view(), name='post_video_token'),
+    path('video/token/<int:booking_id>/', VideoTokenRetrieveAPIView.as_view(), name='get_video_token'),
 
 ]
 
