@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { CheckCircle, X } from 'lucide-react';
 import api from '../../apiCalls/axios';
 
 const AdvocateLogin = () => {
@@ -11,6 +12,7 @@ const AdvocateLogin = () => {
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   const navigate = useNavigate();
 
@@ -21,6 +23,32 @@ const AdvocateLogin = () => {
       [name]: value,
     }));
   };
+
+  // Custom toast components
+  const CustomSuccessToast = ({ message }) => (
+    <div className="custom-toast-container">
+      <CheckCircle size={64} className="custom-toast-icon-success" />
+      <p className="custom-toast-message">{message}</p>
+    </div>
+  );
+
+  const CustomErrorToast = ({ message, closeToast }) => (
+    <div className="custom-toast-container">
+      <button 
+        onClick={() => {
+          closeToast();
+          setShowToast(false);
+        }}
+        className="custom-toast-close-btn"
+      >
+        <X size={24} />
+      </button>
+      <div className="custom-toast-icon-error-bg">
+        <X size={48} className="custom-toast-icon-error" />
+      </div>
+      <p className="custom-toast-message">{message}</p>
+    </div>
+  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,26 +78,40 @@ const AdvocateLogin = () => {
       localStorage.setItem("role", role);
 
       if (role !== "lawyer") {
-        toast.error("You are not registered as a lawyer.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
+        setShowToast(true);
+        toast.error(
+          <CustomErrorToast message="You are not registered as a lawyer." />,
+          { 
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: false,
+            closeButton: false,
+            className: "custom-toast-wrapper",
+            onClose: () => setShowToast(false)
+          }
+        );
         return;
       }
 
       // Show success toast
-      toast.success("Login successful!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      setShowToast(true);
+      toast.success(
+        <CustomSuccessToast message="Login successful!" />,
+        { 
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: false,
+          closeButton: false,
+          className: "custom-toast-wrapper",
+          onClose: () => setShowToast(false)
+        }
+      );
 
       // ✅ Role-based redirect with slight delay to show toast
       setTimeout(() => {
@@ -80,26 +122,40 @@ const AdvocateLogin = () => {
         } else if (status === "rejected") {
           navigate("/");
         } else {
-          toast.error("Unknown profile status. Contact support.", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
+          setShowToast(true);
+          toast.error(
+            <CustomErrorToast message="Unknown profile status. Contact support." />,
+            { 
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: true,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: false,
+              closeButton: false,
+              className: "custom-toast-wrapper",
+              onClose: () => setShowToast(false)
+            }
+          );
         }
       }, 1000);
     } catch (err) {
       console.error(err);
-      toast.error("Login failed. Please check your credentials.", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      setShowToast(true);
+      toast.error(
+        <CustomErrorToast message="Login failed. Please check your credentials." />,
+        { 
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: false,
+          closeButton: false,
+          className: "custom-toast-wrapper",
+          onClose: () => setShowToast(false)
+        }
+      );
     } finally {
       setLoading(false);
     }
@@ -107,8 +163,11 @@ const AdvocateLogin = () => {
 
   return (
     <div className="flex h-screen font-sans">
+      {/* Blur overlay when toast is visible */}
+      {showToast && <div className="toast-overlay"></div>}
+      
       <div
-        className="relative flex-1 bg-cover bg-center flex flex-col justify-center items-center p-5 text-center"
+        className={`relative flex-1 bg-cover bg-center flex flex-col justify-center items-center p-5 text-center ${showToast ? 'blurred' : ''}`}
         style={{
           backgroundImage: `url('https://images.unsplash.com/photo-1588776814546-8e1a529d7b77?auto=format&fit=crop&w=900&q=80')`,
         }}
@@ -128,7 +187,7 @@ const AdvocateLogin = () => {
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col justify-center p-10 md:p-16 bg-[#fceee0] font-sans">
+      <div className={`flex-1 flex flex-col justify-center p-10 md:p-16 bg-[#fceee0] font-sans ${showToast ? 'blurred' : ''}`}>
         <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">
           Log in
         </h2>
@@ -209,17 +268,20 @@ const AdvocateLogin = () => {
       </div>
 
       {/* Toast Container */}
-      <ToastContainer
-        position="top-right"
+      <ToastContainer 
+        position="top-center"
         autoClose={3000}
-        hideProgressBar={false}
+        hideProgressBar={true}
         newestOnTop={false}
-        closeOnClick
+        closeOnClick={false}
         rtl={false}
         pauseOnFocusLoss
-        draggable
+        draggable={false}
         pauseOnHover
         theme="light"
+        toastClassName="custom-toast-wrapper"
+        bodyClassName="custom-toast-body"
+        className="toast-container-center"
       />
     </div>
   );

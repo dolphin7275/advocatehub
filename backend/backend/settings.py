@@ -96,9 +96,9 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'AdvocateHub DB',
+        'NAME': 'AdvocateHub',
         "USER":'postgres',
-        'PASSWORD':'hello',
+        'PASSWORD':'Pratik@2003',
         'HOST':'localhost',
         'PORT':'5432',
     }

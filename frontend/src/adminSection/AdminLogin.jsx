@@ -1,5 +1,9 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { CheckCircle, X } from 'lucide-react';
 import api from "../apiCalls/axios"
 
 const AdminLogin = () => {
@@ -7,7 +11,34 @@ const AdminLogin = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const navigate = useNavigate();
+
+  // Custom toast components
+  const CustomSuccessToast = ({ message }) => (
+    <div className="custom-toast-container">
+      <CheckCircle size={64} className="custom-toast-icon-success" />
+      <p className="custom-toast-message">{message}</p>
+    </div>
+  );
+
+  const CustomErrorToast = ({ message, closeToast }) => (
+    <div className="custom-toast-container">
+      <button 
+        onClick={() => {
+          closeToast();
+          setShowToast(false);
+        }}
+        className="custom-toast-close-btn"
+      >
+        <X size={24} />
+      </button>
+      <div className="custom-toast-icon-error-bg">
+        <X size={48} className="custom-toast-icon-error" />
+      </div>
+      <p className="custom-toast-message">{message}</p>
+    </div>
+  );
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -27,17 +58,62 @@ const AdminLogin = () => {
       const { role, name } = profileRes.data;
 
       if (role !== 'admin') {
-        setError('You are not authorized as admin.');
+        setShowToast(true);
+        toast.error(
+          <CustomErrorToast message="You are not authorized as admin." />,
+          { 
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: false,
+            closeButton: false,
+            className: "custom-toast-wrapper",
+            onClose: () => setShowToast(false)
+          }
+        );
         return;
       }
 
       localStorage.setItem('role', 'admin');
       localStorage.setItem('adminName', name);
-      alert(`Welcome, admin ${name}!`);
-      navigate('/admin/dashboard/');
+      
+      // Show success toast
+      setShowToast(true);
+      toast.success(
+        <CustomSuccessToast message={`Welcome Admin ${name}!`} />,
+        { 
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: false,
+          closeButton: false,
+          className: "custom-toast-wrapper",
+          onClose: () => setShowToast(false)
+        }
+      );
+
+      setTimeout(() => navigate('/admin/dashboard/'), 1000);
     } catch (err) {
       console.error(err);
-      setError('Login failed. Please check your credentials.');
+      setShowToast(true);
+      toast.error(
+        <CustomErrorToast message="Login failed. Please check your credentials." />,
+        { 
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: false,
+          closeButton: false,
+          className: "custom-toast-wrapper",
+          onClose: () => setShowToast(false)
+        }
+      );
     } finally {
       setLoading(false);
     }
@@ -98,8 +174,6 @@ const AdminLogin = () => {
           
           {error && <div className="text-red-600 text-sm font-medium">{error}</div>}
 
-
-
           {/* <div className="text-right mb-5">
             <a
               href="/forgot-password"
@@ -119,6 +193,23 @@ const AdminLogin = () => {
 
         </form>
       </div>
+
+      {/* Toast Container */}
+      <ToastContainer 
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable={false}
+        pauseOnHover
+        theme="light"
+        toastClassName="custom-toast-wrapper"
+        bodyClassName="custom-toast-body"
+        className="toast-container-center"
+      />
     </div>
   )
 }

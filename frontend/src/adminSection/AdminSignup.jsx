@@ -1,5 +1,9 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { CheckCircle, X } from 'lucide-react';
 import api from '../apiCalls/axios';
 
 const AdminSignup = () => {
@@ -13,7 +17,7 @@ const AdminSignup = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [showToast, setShowToast] = useState(false);
   const navigate = useNavigate();
 
   // ✅ Redirect if already logged in as admin
@@ -24,7 +28,7 @@ const AdminSignup = () => {
         if (res.data?.role === 'admin' && res.data?.is_superuser) {
           navigate('/admin/dashboard');
         }
-      } catch (err) {
+      } catch {
         // Not logged in or not admin — do nothing
       }
     };
@@ -38,30 +42,115 @@ const AdminSignup = () => {
     }));
   };
 
+  // Custom toast components
+  const CustomSuccessToast = ({ message }) => (
+    <div className="custom-toast-container">
+      <CheckCircle size={64} className="custom-toast-icon-success" />
+      <p className="custom-toast-message">{message}</p>
+    </div>
+  );
+
+  const CustomErrorToast = ({ message, closeToast }) => (
+    <div className="custom-toast-container">
+      <button 
+        onClick={() => {
+          closeToast();
+          setShowToast(false);
+        }}
+        className="custom-toast-close-btn"
+      >
+        <X size={24} />
+      </button>
+      <div className="custom-toast-icon-error-bg">
+        <X size={48} className="custom-toast-icon-error" />
+      </div>
+      <p className="custom-toast-message">{message}</p>
+    </div>
+  );
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setSuccess('');
-
+    setError('');
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match.');
+      setShowToast(true);
+      toast.error(
+        <CustomErrorToast message="Passwords do not match." />,
+        { 
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: false,
+          closeButton: false,
+          className: "custom-toast-wrapper",
+          onClose: () => setShowToast(false)
+        }
+      );
       return;
     }
 
     setLoading(true);
 
     try {
-      const { confirmPassword, ...dataToSend } = formData;
-      const res = await api.post('/userapi/admin-register/', dataToSend);
-      setSuccess('Admin account created successfully!');
+      const { name, email, phone, password } = formData;
+      const dataToSend = { name, email, phone, password };
+      await api.post('/userapi/admin-register/', dataToSend);
+      
+      // Show success toast
+      setShowToast(true);
+      toast.success(
+        <CustomSuccessToast message="Admin account created successfully!" />,
+        { 
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: false,
+          closeButton: false,
+          className: "custom-toast-wrapper",
+          onClose: () => setShowToast(false)
+        }
+      );
+
       setTimeout(() => navigate('/admin/dashboard'), 1500);
     } catch (err) {
       console.error(err);
+      setShowToast(true);
+      
       if (err.response?.data?.email) {
-        setError('Email already exists. Redirecting to login...');
-        setTimeout(() => navigate('/admin/login'), 1500); // ⏳ redirect after short delay
+        toast.error(
+          <CustomErrorToast message="Email already exists. Redirecting to login..." />,
+          { 
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: false,
+            closeButton: false,
+            className: "custom-toast-wrapper",
+            onClose: () => setShowToast(false)
+          }
+        );
+        setTimeout(() => navigate('/admin/login'), 1500);
       } else {
-        setError('Signup failed. Please check the input values.');
+        toast.error(
+          <CustomErrorToast message="Signup failed. Please check the input values." />,
+          { 
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: false,
+            closeButton: false,
+            className: "custom-toast-wrapper",
+            onClose: () => setShowToast(false)
+          }
+        );
       }
     } finally {
       setLoading(false);
@@ -134,8 +223,7 @@ const AdminSignup = () => {
             />
           </div>
 
-          {error && <p className="text-red-600 text-sm">{error}</p>}
-          {success && <p className="text-green-600 text-sm">{success}</p>}
+
 
           <button
             type="submit"
@@ -157,6 +245,23 @@ const AdminSignup = () => {
           </div>
         </form>
       </div>
+
+      {/* Toast Container */}
+      <ToastContainer 
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable={false}
+        pauseOnHover
+        theme="light"
+        toastClassName="custom-toast-wrapper"
+        bodyClassName="custom-toast-body"
+        className="toast-container-center"
+      />
     </div>
   );
 };
