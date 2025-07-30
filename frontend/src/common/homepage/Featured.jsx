@@ -31,7 +31,7 @@ const Featured = () => {
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
       viewport={{ once: true, amount: 0.3 }}
-      className="bg-[#8080d7] py-16 px-4 sm:px-8 md:px-12 lg:px-20 text-center" // Background changed to mid purple #8080d7
+      className="bg-[#8080d7] py-16 px-4 sm:px-8 md:px-12 lg:px-20 text-center" 
     >
       {/* Title */}
       <motion.h2
@@ -90,7 +90,7 @@ const Featured = () => {
                 </div>
               </div>
 
-              <div className="text-xs text-[#010922] mb-2 ml-1 leading-5"> {/* Language/Cost text changed to dark shade */}
+              <div className="text-xs text-[#010922] mb-2 ml-1 leading-5"> 
                 <p>{lawyer.languages || 'English, Hindi, Tamil'}</p>
                 <p>Cost: ₹{lawyer.price || 100} /hr</p>
               </div>
@@ -115,7 +115,7 @@ const Featured = () => {
       {/* Join Section */}
       <div className="mt-10">
         <motion.p
-          className="text-base mb-3 text-white" // Text changed to white
+          className="text-base mb-3 text-white" 
           variants={textVariants}
           initial="hidden"
           animate="visible"

@@ -28,7 +28,6 @@ const Navbar = () => {
           <img className="h-8 mt-4" src={Assets.logoText} alt="text" />
         </div>
 
-        {/* Hamburger Toggle Button (visible on screens smaller than lg) */}
         <div className="lg:hidden">
           <button
             onClick={() => {
@@ -54,7 +53,7 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Main navigation and buttons container */}
+       
         <div
           className={`${
             menuOpen
@@ -62,7 +61,6 @@ const Navbar = () => {
               : "hidden"
           } lg:flex lg:items-center lg:flex-grow lg:justify-end lg:gap-10 mt-4 sm:mt-0 lg:pr-10`}
         >
-          {/* Nav Links (Home, Listing) */}
           <ul className="flex flex-col lg:flex-row lg:gap-6 text-[#F8F8F5] text-center w-full lg:w-auto mb-4 lg:mb-0">
             <li>
               <NavLink
@@ -84,15 +82,11 @@ const Navbar = () => {
             </li>
           </ul>
 
-          {/* Buttons Section (CLIENT, ADVOCATE) */}
-          {/* Changed this div:
-              - `flex-col`: always stacked by default (for mobile/tablet).
-              - `lg:flex-row`: only switches to horizontal at 'lg' breakpoint.
-              - `gap-3`: for vertical spacing on mobile/tablet.
-              - `lg:gap-4`: for horizontal spacing on desktop.
-          */}
+          
+          
+          
           <div className="flex flex-col gap-3 w-full lg:w-auto px-4 lg:px-0 justify-center lg:flex-row lg:gap-4">
-            {/* Client Dropdown */}
+           
             <div className="relative w-full sm:w-auto">
               <button
                 onClick={() => {
@@ -127,7 +121,7 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* Advocate Dropdown */}
+           
             <div className="relative w-full sm:w-auto">
               <button
                 onClick={() => {

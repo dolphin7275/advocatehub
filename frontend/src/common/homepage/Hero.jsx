@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
 import { motion } from "framer-motion";
-import { Link } from 'react-router-dom'; // Corrected import for Link from 'react-router-dom'
+import { Link } from 'react-router-dom'; 
 
 const container = (delay) => ({
   hidden: { x: -100, opacity: 0 },
@@ -132,7 +132,7 @@ const Hero = () => {
             <motion.button
               whileHover={{
                 scale: 1.05,
-                // boxShadow: "0 10px 25px -5px rgba(140, 43, 50, 0.4)" // Original commented out
+                // boxShadow: "0 10px 25px -5px rgba(140, 43, 50, 0.4)" // 
               }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
@@ -172,10 +172,9 @@ const Hero = () => {
               scale: 1.05,
               transition: { duration: 0.3 }
             }}
-            src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" // Image source applied
+            src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" 
             alt="Legal Help"
-            className="w-full max-w-xs sm:max-w-sm md:max-w-md object-contain drop-shadow-lg" // Ensured responsive image sizing
-          />
+            className="w-full max-w-xs sm:max-w-sm md:max-w-md object-contain drop-shadow-lg"  />
         </motion.div>
       </div>
     </motion.section>
