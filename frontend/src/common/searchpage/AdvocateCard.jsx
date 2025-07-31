@@ -147,7 +147,7 @@ const AdvocateCard = () => {
           Book an Appointment
         </button>
       </div> */}
-      <LawyerReviewSection/>
+      <LawyerReviewSection lawyerId={lawyer.id}/>
 
       {showBooking && (
         <div className="bg-[#6E7582] rounded-xl shadow-lg p-6 mt-6">
