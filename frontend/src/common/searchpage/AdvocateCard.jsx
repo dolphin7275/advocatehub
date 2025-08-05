@@ -192,6 +192,15 @@ const AdvocateCard = () => {
     );
   };
 
+  const closeModal = () => {
+    setShowBooking(false);
+    // Reset form fields when closing
+    setMode('Meeting');
+    setLocation('');
+    setDate('');
+    setFromTime('');
+  };
+
   return (
     <div className="bg-[#fdf3e6] min-h-screen p-4 md:p-8">
       {/* Blur overlay when toast is visible */}
@@ -246,8 +255,6 @@ const AdvocateCard = () => {
           </p>
         </div>
 
-        {/* Render the new LawyerReviews component here */}
-
         <div className="bg-[#f1d2a9] rounded-xl shadow-lg p-6 mt-6">
           <h3 className="text-lg font-bold text-[#0a043c] mb-3">Rating & Reviews</h3>
           <div className="flex items-center gap-2 mb-4">
@@ -278,93 +285,97 @@ const AdvocateCard = () => {
             Book an Appointment
           </button>
         </div>
+      </div>
 
-        {showBooking && (
-          <div className="bg-[#f1d2a9] rounded-xl shadow-lg p-6 mt-6">
-            <div className="flex justify-center items-center mt-8">
-              <div className="bg-black text-white p-8 rounded-2xl shadow-lg w-[430px]">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-serif font-semibold">Schedule an appointment</h2>
-                  <button onClick={() => setShowBooking(false)} className="text-white text-xl">×</button>
-                </div>
+      {/* Booking Modal Popup */}
+      {showBooking && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+          <div className="bg-[#f1d2a9] text-black p-6 rounded-2xl shadow-2xl w-96 max-w-sm border-2 border-[#d2b77c]">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-serif font-bold text-[#0a043c]">Schedule Appointment</h2>
+              <button 
+                onClick={closeModal} 
+                className="text-[#0a043c] text-2xl hover:text-red-600 transition-colors font-bold"
+              >
+                ×
+              </button>
+            </div>
 
-                <div className="mb-4">
-                  <label className="block text-sm font-semibold mb-2">Select Mode</label>
-                  <select
-                    className="w-full bg-white border border-gray-300 text-black p-3 rounded-md focus:outline-none"
-                    value={mode}
-                    onChange={(e) => setMode(e.target.value)}
-                  >
-                    <option value="Meeting">Meeting</option>
-                    <option value="online">Online</option>
-                    <option value="physical">Physical</option>
-                  </select>
-                </div>
+            <div className="mb-3">
+              <label className="block text-sm font-bold mb-1 text-[#0a043c]">Select Mode</label>
+              <select
+                className="w-full bg-white border-2 border-[#d2b77c] text-black p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0a043c] focus:border-[#0a043c]"
+                value={mode}
+                onChange={(e) => setMode(e.target.value)}
+              >
+                <option value="Meeting">Meeting</option>
+                <option value="online">Online</option>
+                <option value="physical">Physical</option>
+              </select>
+            </div>
 
-                <div className="mb-4">
-                  <label className="block text-sm font-semibold mb-2">Add Location</label>
-                  <select
-                    className="w-full bg-white border border-gray-300 text-black p-3 rounded-md focus:outline-none"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                  >
-                    <option value="">Select Location</option>
-                    <option value="Lucknow">Lucknow</option>
-                    <option value="Bihar">Bihar</option>
-                    <option value="Mumbai">Mumbai</option>
-                    <option value="Delhi chamber">Delhi chamber</option>
-                    <option value="Kolkata">Kolkata</option>
-                    <option value="Indore">Indore</option>
-                    <option value="Ahmadnagar">Ahmadnagar</option>
-                    <option value="Nagpur">Nagpur</option>
-                  </select>
-                </div>
+            <div className="mb-3">
+              <label className="block text-sm font-bold mb-1 text-[#0a043c]">Add Location</label>
+              <select
+                className="w-full bg-white border-2 border-[#d2b77c] text-black p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0a043c] focus:border-[#0a043c]"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+              >
+                <option value="">Select Location</option>
+                <option value="Lucknow">Lucknow</option>
+                <option value="Bihar">Bihar</option>
+                <option value="Mumbai">Mumbai</option>
+                <option value="Delhi chamber">Delhi chamber</option>
+                <option value="Kolkata">Kolkata</option>
+                <option value="Indore">Indore</option>
+                <option value="Ahmadnagar">Ahmadnagar</option>
+                <option value="Nagpur">Nagpur</option>
+              </select>
+            </div>
 
-                <div className="mb-6">
-                  <label className="block text-sm font-semibold mb-2">Available Slots</label>
-                  <select
-                    className="w-full bg-white border border-gray-300 text-black p-3 rounded-md focus:outline-none"
-                    onChange={(e) => {
-                      const [d, t] = e.target.value.split(', ');
-                      setDate(d);
-                      setFromTime(t);
-                    }}
-                  >
-                    <option value="">Select a slot</option>
-                    {lawyer.available_slots &&
-                      Object.entries(lawyer.available_slots).flatMap(([d, times]) =>
-                        times.map((time, index) => (
-                          <option key={`${d}-${time}-${index}`} value={`${d}, ${time}`}>
-                            {new Date(`${d}T${time}`).toLocaleString('en-IN', {
-                              dateStyle: 'long',
-                              timeStyle: 'short',
-                              timeZone: 'Asia/Kolkata',
-                            })}
-                          </option>
-                        ))
-                      )}
-                  </select>
-                </div>
+            <div className="mb-4">
+              <label className="block text-sm font-bold mb-1 text-[#0a043c]">Available Slots</label>
+              <select
+                className="w-full bg-white border-2 border-[#d2b77c] text-black p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0a043c] focus:border-[#0a043c]"
+                onChange={(e) => {
+                  const [d, t] = e.target.value.split(', ');
+                  setDate(d);
+                  setFromTime(t);
+                }}
+              >
+                <option value="">Select a slot</option>
+                {lawyer.available_slots &&
+                  Object.entries(lawyer.available_slots).flatMap(([d, times]) =>
+                    times.map((time, index) => (
+                      <option key={`${d}-${time}-${index}`} value={`${d}, ${time}`}>
+                        {new Date(`${d}T${time}`).toLocaleString('en-IN', {
+                          dateStyle: 'long',
+                          timeStyle: 'short',
+                          timeZone: 'Asia/Kolkata',
+                        })}
+                      </option>
+                    ))
+                  )}
+              </select>
+            </div>
 
-                <div className="flex justify-between">
-                  <button
-                    onClick={() => setShowBooking(false)}
-                    className="bg-[#d2b77c] text-black px-6 py-2 rounded-md font-semibold w-[45%]"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleBooking}
-                    className="bg-[#0a043c] text-white px-6 py-2 rounded-md font-semibold w-[45%] border border-white"
-                  >
-                    Booked
-                  </button>
-                </div>
-              </div>
+            <div className="flex justify-between gap-3 mt-5">
+              <button
+                onClick={closeModal}
+                className="bg-white text-[#0a043c] border-2 border-[#0a043c] px-4 py-2 rounded-md font-bold flex-1 hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleBooking}
+                className="bg-[#0a043c] text-white px-4 py-2 rounded-md font-bold flex-1 hover:bg-[#030224] transition-colors"
+              >
+                Book Now
+              </button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Toast Container */}
       <ToastContainer 
