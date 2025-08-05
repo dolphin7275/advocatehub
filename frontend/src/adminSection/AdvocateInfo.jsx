@@ -2,16 +2,57 @@ import React, { useState } from 'react';
 import { FaCheckCircle, FaTimesCircle, FaSearch, FaSignOutAlt } from "react-icons/fa";
 import { MdPending } from "react-icons/md";
 import { useLocation } from "react-router-dom";
-import api from '../apiCalls/axios.js';
+import api from '../apiCalls/axios'
+
+
+// ✅ CSRF token helper function
+const getCsrfToken = () => {
+  const name = "csrftoken";
+  const cookies = document.cookie.split(";");
+  for (let i = 0; i < cookies.length; i++) {
+    let cookie = cookies[i].trim();
+    if (cookie.startsWith(name + "=")) {
+      return cookie.substring(name.length + 1);
+    }
+  }
+  return "";
+};
 
 const AdvocateInfo = () => {
   const [activeLink, setActiveLink] = useState("All Profiles");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   const location = useLocation();
   const { profile } = location.state;
   console.log(profile.education);
   console.log(profile.kyc?.AadhaarFront);
+
+  // Custom toast components (same as AdvocateLogin)
+  const CustomSuccessToast = ({ message }) => (
+    <div className="custom-toast-container">
+      <CheckCircle size={64} className="custom-toast-icon-success" />
+      <p className="custom-toast-message">{message}</p>
+    </div>
+  );
+
+  const CustomErrorToast = ({ message, closeToast }) => (
+    <div className="custom-toast-container">
+      <button 
+        onClick={() => {
+          closeToast();
+          setShowToast(false);
+        }}
+        className="custom-toast-close-btn"
+      >
+        <X size={24} />
+      </button>
+      <div className="custom-toast-icon-error-bg">
+        <X size={48} className="custom-toast-icon-error" />
+      </div>
+      <p className="custom-toast-message">{message}</p>
+    </div>
+  );
 
   if (!profile) {
     return (
@@ -43,36 +84,36 @@ const AdvocateInfo = () => {
           withCredentials: true,
         }
       );
-      alert(`Lawyer ${action}d successfully`);
-    } catch (error) {
-      console.error(`Failed to ${action} lawyer:`, error);
       
-      if (error.response) {
-        // Server responded with error status
-        console.error('Error response:', error.response.data);
-        console.error('Error status:', error.response.status);
-        
-        if (error.response.status === 403) {
-          alert(`Failed to ${action} lawyer: You don't have admin permissions`);
-        } else if (error.response.status === 404) {
-          alert(`Failed to ${action} lawyer: Lawyer not found`);
-        } else {
-          alert(`Failed to ${action} lawyer: ${error.response.data.error || 'Unknown error'}`);
+      // Show success toast instead of alert
+      setShowToast(true);
+      const message = action === 'approve' 
+        ? 'Lawyer approved successfully!' 
+        : 'Lawyer rejected successfully!';
+      
+      toast.success(
+        <CustomSuccessToast message={message} />,
+        { 
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: false,
+          closeButton: false,
+          className: "custom-toast-wrapper",
+          onClose: () => setShowToast(false)
         }
-      } else if (error.request) {
-        // Request was made but no response received
-        console.error('No response received:', error.request);
-        alert(`Failed to ${action} lawyer: No response from server. Is the backend running?`);
-      } else {
-        // Something else happened
-        console.error('Error:', error.message);
-        alert(`Failed to ${action} lawyer: ${error.message}`);
-      }
+      );
+      
+    } catch (error) {
+      console.error(`Failed to ${action} lawyer`, error);
+      alert(`Failed to ${action} lawyer`);
     }
   };
 
   return (
-    <div className="relative min-h-screen text-white bg-[#6E7582]">
+    <div className="min-h-screen text-sm bg-[#141f52] relative">
 
       {/* Toggle Button */}
       <button
@@ -181,13 +222,13 @@ const AdvocateInfo = () => {
 
         {/* Client Info */}
         {/* Personal & Practice + KYC side by side */}
-<main className={`flex-1 p-12 transition-all duration-300 ease-in-out ${sidebarOpen ? 'ml-64' : 'ml-0'}`}>
-  <div className="flex flex-col lg:flex-row gap-6">
+        <main className={`flex-1 p-12 transition-all duration-300 ease-in-out ${sidebarOpen ? 'ml-64' : 'ml-0'} ${showToast ? 'blurred' : ''}`}>
+          <div className="flex flex-col lg:flex-row gap-6">
 
     {/* Left: Personal + Practice Info */}
     <div className="flex-1 space-y-6">
       {/* Personal Info */}
-      <section className="bg-[#8C2B32] p-6 rounded-lg shadow-md">
+      <section className="bg-[#e8d6b5] p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-bold mb-4">Personal Information</h2>
         <div className="flex items-start gap-6">
           {profile.user_profile && (
@@ -209,7 +250,7 @@ const AdvocateInfo = () => {
       </section>
 
       {/* Practice Info */}
-      <section className="bg-[#8C2B32] p-6 rounded-lg shadow-md">
+      <section className="bg-[#e8d6b5] p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-bold mb-4">Practice Information</h2>
         <p className='capitalize'><strong>Location:</strong> {profile.location}</p>
         <p><strong>Experience:</strong> {profile.experience}</p>
@@ -218,7 +259,7 @@ const AdvocateInfo = () => {
     </div>
 
     {/* Right: KYC Documents */}
-    <section className="bg-[#8C2B32] p-6 rounded-lg shadow-md w-full lg:w-1/3">
+    <section className="bg-[#e8d6b5] p-6 rounded-lg shadow-md w-full lg:w-1/3">
   <h2 className="text-xl font-bold mb-4">KYC Upload</h2>
   {profile ? (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -266,18 +307,37 @@ const AdvocateInfo = () => {
   )}
 </section>
 
-  </div>
+          </div>
 
-  {/* Action Buttons */}
-  <div className="flex gap-8 justify-center text-lg pt-8">
-    <button className="bg-green-600 text-white px-4 py-2 rounded" onClick={() => handleAction(profile.id, 'approve')}>Approve</button>
-    <button className="bg-red-600 text-white px-4 py-2 rounded" onClick={() => handleAction(profile.id, 'reject')}>Reject</button>
-  </div>
-</main>
+          {/* Action Buttons */}
+          <div className="flex gap-8 justify-center text-lg pt-8">
+            <button className="bg-green-600 text-white px-4 py-2 rounded" onClick={() => handleAction(profile.id, 'approve')}>Approve</button>
+            <button className="bg-red-600 text-white px-4 py-2 rounded" onClick={() => handleAction(profile.id, 'reject')}>Reject</button>
+          </div>
+        </main>
 
       </div>
+
+      {/* Toast Container */}
+      <ToastContainer 
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable={false}
+        pauseOnHover
+        theme="light"
+        toastClassName="custom-toast-wrapper"
+        bodyClassName="custom-toast-body"
+        className="toast-container-center"
+      />
     </div>
   );
 };
 
 export default AdvocateInfo;
+
+
