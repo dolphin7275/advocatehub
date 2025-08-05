@@ -13,7 +13,8 @@ from rest_framework.serializers import ValidationError
 
 from .models import Review, ReviewReply
 from lawyerapi.models import Lawyer 
-from .serializers import ReviewSerializer, LawyerSerializerForReviews, ReviewReplySerializer
+from .serializers import ReviewSerializer, ReviewReplySerializer
+from advocateshub.serializers import LawyerSerializer
 
 User = get_user_model()
 
@@ -77,6 +78,24 @@ class LawyerReviewsAPIView(APIView):
         serializer = ReviewSerializer(reviews, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def post(self, request, lawyer_id, format=None):
+    # 👨‍⚖️ Ensure lawyer exists
+        lawyer_instance = get_object_or_404(Lawyer, user__id=lawyer_id)
+
+    # 🧠 Add the lawyer_id into the request data so serializer can use it
+        data = request.data.copy()
+        data['lawyer_id'] = lawyer_id
+
+    # 💡 Pass request in context for create()
+        serializer = ReviewSerializer(data=data, context={'request': request})
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class LawyerDetailWithReviewsAPIView(APIView):
     permission_classes = [AllowAny]
 
@@ -86,5 +105,5 @@ class LawyerDetailWithReviewsAPIView(APIView):
         except Lawyer.DoesNotExist:
             return Response({"detail": "Lawyer profile not found."}, status=status.HTTP_404_NOT_FOUND)
         
-        serializer = LawyerSerializerForReviews(lawyer_instance)
+        serializer = LawyerSerializer(lawyer_instance)
         return Response(serializer.data, status=status.HTTP_200_OK)

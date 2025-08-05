@@ -4,20 +4,21 @@ from .models import Review, ReviewReply
 from lawyerapi.models import Lawyer 
 from advocateshub.models import User 
 from clientapi.models import Client 
+from advocateshub.serializers import UserNestedSerializer,LawyerSerializer
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'username', 'email']
+# class UserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ['id', 'username', 'email']
 
-class LawyerSerializerForReviews(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True) 
-    class Meta:
-        model = Lawyer
-        fields = [
-            'user', 'location', 'court_level', 'case_types', 'experience', 
-            'price', 'languages', 'average_rating', 'review_count'
-        ] # Include relevant lawyer fields and aggregated review fields
+# class LawyerSerializerForReviews(serializers.ModelSerializer):
+#     user = UserNestedSerializer(read_only=True) 
+#     class Meta:
+#         model = Lawyer
+#         fields = [
+#             'user', 'location', 'court_level', 'case_types', 'experience', 
+#             'price', 'languages', 'average_rating', 'review_count'
+#         ] # Include relevant lawyer fields and aggregated review fields
 
 class ReviewReplySerializer(serializers.ModelSerializer):
     lawyer_name = serializers.CharField(source='lawyer.user.username', read_only=True)
@@ -26,12 +27,12 @@ class ReviewReplySerializer(serializers.ModelSerializer):
         model = ReviewReply
         fields = ['id', 'lawyer_name', 'reply_text', 'created_at']
         read_only_fields = ['id', 'lawyer_name', 'created_at']
-
+    
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True) 
-    lawyer = LawyerSerializerForReviews(read_only=True) # Display lawyer details
+    user = UserNestedSerializer(read_only=True) 
+    lawyer = LawyerSerializer(read_only=True) # Display lawyer details
     reply = ReviewReplySerializer(read_only=True)
     class Meta:
         model = Review
@@ -51,15 +52,15 @@ class ReviewSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"lawyer_id": "This field is required."})
         
         try:
-            lawyer_instance = Lawyer.objects.get(user__id=lawyer_id) 
+            lawyer_instance = Lawyer.objects.get(id=lawyer_id) 
         except Lawyer.DoesNotExist:
             raise serializers.ValidationError({"lawyer_id": "Lawyer profile not found."})
 
         # Check for existing review by this user for this lawyer
         if Review.objects.filter(user=user_for_validation, lawyer=lawyer_instance).exists():
             raise serializers.ValidationError("You have already submitted a review for this lawyer.")
-
-        review = Review.objects.create(lawyer=lawyer_instance, **validated_data) 
+        review = Review.objects.create(lawyer=lawyer_instance,user=user_for_validation,**validated_data)
+        # review = Review.objects.create(lawyer=lawyer_instance, **validated_data) 
         return review
 
     def update(self, instance, validated_data):

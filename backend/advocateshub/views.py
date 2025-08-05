@@ -20,10 +20,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.utils.timezone import now
-from datetime import timedelta
-
-from twilio.jwt.access_token import AccessToken
-from twilio.jwt.access_token.grants import VideoGrant
+from django.contrib.auth import get_user_model
+User = get_user_model()
+from .utils import generate_twilio_token  # ✅ import the function
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -268,6 +267,8 @@ class AllLawyersAPI(APIView):
             "case_types": l.case_types,
             "court_level": l.court_level,
             "profile_status": l.profile_status,
+            "average_rating": l.average_rating,
+            "review_count": l.review_count,
             "signup_date": l.user.date_joined.strftime("%d %B %Y"),
             "phone": l.user.phone,
             "degree": request.build_absolute_uri(l.degree.url) if l.degree else None,
@@ -344,6 +345,9 @@ class CreateBookingAPI(APIView):
 
         date_key = slot.split("T")[0]
         time_val = slot.split("T")[1][:5]
+        # slot_dt = datetime.fromisoformat(slot.replace("Z", "+00:00"))  # Handle Zulu time
+        # date_key = slot_dt.strftime("%Y-%m-%d")
+        # time_val = slot_dt.strftime("%H:%M")
 
         if time_val not in lawyer.available_slots.get(date_key, []):
             return Response({"error": "Selected slot is not available"}, status=400)
@@ -643,31 +647,26 @@ class ChatHistoryAPI(APIView):
         messages = ChatMessage.objects.filter(booking__id=booking_id).order_by("timestamp")
         serializer = ChatMessageSerializer(messages, many=True)
         return Response(serializer.data)
-    
+# ________________________________________________________________________________________________________
 
+# views :
 
-# _______________________________________________
-# VideoChatView
-class VideoChatAPIView(APIView):
+class VideoTokenRetrieveAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, booking_id):
         try:
-            booking = Booking.objects.select_related('client__user', 'lawyer__user').get(id=booking_id)
+            booking = Booking.objects.select_related('client', 'lawyer').get(id=booking_id)
+            allowed_users = [booking.client.user, booking.lawyer.user]
+            # Some Error in Auths
+            # if request.user not in allowed_users:
+            #     return Response({"detail": "Access denied"}, status=status.HTTP_403_FORBIDDEN)
 
-            if request.user not in [booking.client.user, booking.lawyer.user]:
-                return Response({"detail": "Access denied"}, status=status.HTTP_403_FORBIDDEN)
-
-            # Optional time window check (uncomment if needed)
-            # if not (booking.scheduled_for - timedelta(minutes=10) <= now() <= booking.scheduled_for + timedelta(minutes=60)):
-            #     return Response({"detail": "Video session not allowed at this time."}, status=status.HTTP_403_FORBIDDEN)
-
-            # Create or reuse session
             session, _ = VideoSession.objects.get_or_create(booking=booking)
             session.participants.add(request.user)
             session.save()
 
-            token = self.generate_twilio_token(request.user.username, room_name=str(booking.id))
+            token = generate_twilio_token(str(request.user.id), room_name=str(booking.id))
 
             return Response({
                 "token": token,
@@ -678,15 +677,32 @@ class VideoChatAPIView(APIView):
         except Booking.DoesNotExist:
             return Response({"detail": "Booking not found."}, status=status.HTTP_404_NOT_FOUND)
 
-    def generate_twilio_token(self, identity, room_name):
-        token = AccessToken(
-            settings.TWILIO_ACCOUNT_SID,
-            settings.TWILIO_API_KEY,
-            settings.TWILIO_API_SECRET,
-            identity=identity
-        )
-        token.add_grant(VideoGrant(room=room_name))
-        return token.to_jwt().decode('utf-8')
 
+class VideoTokenCreateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def post(self, request):
+        booking_id = request.data.get("booking")
+        participant_ids = request.data.get("participants", [])
 
+        try:
+            booking = Booking.objects.get(id=booking_id)
+            session, _ = VideoSession.objects.get_or_create(booking=booking)
+
+            for user_id in participant_ids:
+                try:
+                    user = User.objects.get(id=user_id)
+                    session.participants.add(user)
+                except User.DoesNotExist:
+                    continue
+
+            session.save()
+
+            return Response({
+                "message": "Participants added",
+                "booking_id": booking.id,
+                "participants": list(session.participants.values("id", "username"))
+            })
+
+        except Booking.DoesNotExist:
+            return Response({"detail": "Booking not found."}, status=status.HTTP_404_NOT_FOUND)

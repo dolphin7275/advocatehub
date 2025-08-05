@@ -20,6 +20,8 @@ const AdvocateList = () => {
       try {
         const response = await api.get('/userapi/approved-lawyers/');
         setLawyers(response.data);
+        console.log(response.data);
+        
         setFilteredLawyers(response.data);
       } catch (err) {
         console.error('Failed to fetch lawyers', err);
@@ -84,7 +86,7 @@ const AdvocateList = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
         {filteredLawyers.length > 0 ? filteredLawyers.map(lawyer => (
           <div
-            key={lawyer.id}
+            key={lawyer.user?.id}
             className="bg-[#e0c097] p-6 rounded-xl shadow-lg flex flex-col items-center text-center"
           >
             <img
@@ -101,7 +103,7 @@ const AdvocateList = () => {
             <div className="text-sm font-medium mb-3 text-black">Cost : ₹{lawyer.price} per hr</div>
             <button
               className="bg-[#0a043c] text-white py-2 px-4 rounded shadow hover:bg-[#030224] transition"
-              onClick={() => navigate(`lawyer/${lawyer.id}`)}
+              onClick={() => navigate(`lawyer/${lawyer.user?.id}`)}
             >
               See Profile
             </button>

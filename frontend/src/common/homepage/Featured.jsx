@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion'; 
-import api from "../../apiCalls/axios"
+import { motion } from 'framer-motion';
+import api from "../../apiCalls/axios";
 import { FaStar } from 'react-icons/fa';
 
 const Featured = () => {
@@ -11,7 +11,6 @@ const Featured = () => {
     const fetchLawyers = async () => {
       try {
         const res = await api.get('/userapi/all-lawyers/');
-        console.log(res.data)
         const approved = res.data.filter(lawyer => lawyer.profile_status === 'approved');
         setFeaturedLawyers(approved.slice(0, 4));
       } catch (err) {
@@ -21,7 +20,6 @@ const Featured = () => {
     fetchLawyers();
   }, []);
 
-  // Animation variants for text elements
   const textVariants = {
     hidden: { opacity: 0, y: -20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
@@ -33,21 +31,21 @@ const Featured = () => {
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
       viewport={{ once: true, amount: 0.3 }}
-      className="bg-[#6E7582] py-16 px-4 text-center"
+      className="bg-[#8080d7] py-16 px-4 sm:px-8 md:px-12 lg:px-20 text-center" 
     >
-      {/* Added motion to heading */}
-      <motion.h2 
-        className="text-4xl font-bold mb-4 text-[#8c2b32] text-center"
+      {/* Title */}
+      <motion.h2
+        className="text-3xl sm:text-4xl font-bold mb-4 text-white" // Text changed to white
         variants={textVariants}
         initial="hidden"
         animate="visible"
       >
         Featured Lawyers
       </motion.h2>
-      
-      {/* Added motion to subtitle */}
-      <motion.p 
-        className="text-[#F8F8F5] text-lg mb-12 text-center"
+
+      {/* Subtitle */}
+      <motion.p
+        className="text-white text-base sm:text-lg mb-12" // Text changed to white
         variants={textVariants}
         initial="hidden"
         animate="visible"
@@ -56,64 +54,68 @@ const Featured = () => {
         Meet the most popular and highly recommended lawyers on our platform.
       </motion.p>
 
-      <div className="flex flex-wrap justify-center gap-6 max-w-6xl mx-auto">
+      {/* Lawyer Cards */}
+      <div className="flex flex-wrap justify-center gap-6 max-w-7xl mx-auto">
         {featuredLawyers.length === 0 ? (
-          <p className="text-[#f8f8f5]">No featured lawyers available at the moment.</p>
+          <p className="text-white">No featured lawyers available at the moment.</p> // Text changed to white
         ) : (
           featuredLawyers.map((lawyer, i) => (
-            <div
+            <motion.div
               key={i}
-              className="bg-[#d6b47a] w-[200px] rounded-xl p-4 shadow-md text-left font-sans"
+              className="bg-[#aad9d9] w-full max-w-[250px] sm:w-[220px] rounded-xl p-4 shadow-md text-left" // Card background changed to #aad9d9
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: i * 0.2 }}
+              viewport={{ once: true }}
             >
-              <div className="flex items-center mb-2">
+              <div className="flex items-center mb-3">
                 <img
                   src={lawyer.user_profile || "/images/lawyer-avatar.jpg"}
                   alt="Lawyer"
-                  className="w-14 h-14 rounded-full object-cover mr-3 border border-white shadow"
+                  className="w-14 h-14 rounded-full object-cover mr-3 border border-white shadow" // Border changed to white
                 />
                 <div>
-                  <h3 className="text-sm font-bold text-[#1e1e1e]">{lawyer.user_name}</h3>
+                  <h3 className="text-sm font-bold text-[#010922]">{lawyer.user_name}</h3> {/* Name text changed to dark shade */}
                   <div className="flex items-center">
                     {[...Array(5)].map((_, idx) => (
                       <FaStar
                         key={idx}
-                        className={`h-3 w-3 ${
-                          idx < (lawyer.rating || 4) ? 'text-red-500' : 'text-gray-300'
-                        }`}
+                        className={`h-3 w-3 ${idx < (lawyer.rating || 4) ? 'text-[#010922]' : 'text-gray-300'}`} // Star color adjusted to dark shade
                       />
                     ))}
                   </div>
-                  <p className="text-s font-semibold text-black mt-1">
-                    Exp: {lawyer.experience || '2'}yrs
+                  <p className="text-xs font-semibold text-[#010922] mt-1"> {/* Experience text changed to dark shade */}
+                    Exp: {lawyer.experience || '2'} yrs
                   </p>
                 </div>
               </div>
 
-              <div className="text-xs text-black mb-2 ml-1">
-                <p>{lawyer.languages || 'English , Hindi , Tamil'}</p>
-                <p>Cost : ₹{lawyer.price || 100} per hr</p>
+              <div className="text-xs text-[#010922] mb-2 ml-1 leading-5"> 
+                <p>{lawyer.languages || 'English, Hindi, Tamil'}</p>
+                <p>Cost: ₹{lawyer.price || 100} /hr</p>
               </div>
 
               <div className="text-center mt-2">
-                <button className="bg-[#0e1a3c] text-white px-4 py-1 text-sm rounded shadow hover:bg-[#09132d] transition">
+                <button className="bg-[#8080d7] text-white px-4 py-1 text-sm rounded shadow hover:bg-[#6a6ac2] transition"> {/* Button background changed to mid purple #8080d7, text white */}
                   See Profile
                 </button>
               </div>
-            </div>
+            </motion.div>
           ))
         )}
       </div>
 
-      <div className="m-8">
-        <button className="border text-lg border-[#b48a48] bg-[#c4a552] text-[#1e1e1e] px-8 py-3 rounded-full font-semibold hover:bg-[#b48a48] hover:text-white transition">
+      {/* Browse All Button */}
+      <div className="mt-12">
+        <button className="border text-lg border-[#aad9d9] bg-[#aad9d9] text-[#010922] px-8 py-3 rounded-full font-semibold hover:bg-[#99c3c3] hover:text-[#010922] transition"> {/* Button background and border changed to #aad9d9, text to dark shade */}
           Browse All
         </button>
       </div>
 
-      <div className="mt-6">
-        {/* Added motion to bottom text */}
-        <motion.p 
-          className='text-base mb-2'
+      {/* Join Section */}
+      <div className="mt-10">
+        <motion.p
+          className="text-base mb-3 text-white" 
           variants={textVariants}
           initial="hidden"
           animate="visible"
@@ -121,8 +123,8 @@ const Featured = () => {
         >
           Are you a Lawyer?
         </motion.p>
-        <button className="bg-[#8c2b32] text-white px-6 py-3 rounded-full text-sm font-bold shadow-md hover:bg-[#09132d] transition">
-          Join to our Law Firm.
+        <button className="bg-[#aad9d9] text-[#010922] px-6 py-3 rounded-full text-sm font-bold shadow-md hover:bg-[#99c3c3] transition"> {/* Button background changed to #aad9d9, text to dark shade */}
+          Join our Law Firm
         </button>
       </div>
     </motion.section>

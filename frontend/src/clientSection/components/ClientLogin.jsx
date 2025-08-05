@@ -110,7 +110,7 @@ const ClientLogin = () => {
           onClose: () => setShowToast(false)
         }
       );
-      setTimeout(() => navigate("/advocate-list"), 1000);
+      setTimeout(() => navigate("/client/dashboard"), 1000);
     } catch (err) {
       console.error(err);
       setShowToast(true);

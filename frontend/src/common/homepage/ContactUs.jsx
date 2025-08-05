@@ -1,11 +1,10 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
-import { motion } from 'framer-motion'; // Added framer-motion import
+import { motion } from 'framer-motion';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ContactUs = () => {
-
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -23,12 +22,10 @@ const ContactUs = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Submitted Query:', formData);
     toast.success('Your message has been sent!');
     setFormData({ name: '', email: '', contact: '', subject: '', message: '' });
   };
 
-  // Animation variants for form elements
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -36,125 +33,92 @@ const ContactUs = () => {
       y: 0,
       transition: {
         duration: 0.6,
-        staggerChildren: 0.1 // Stagger animation for form fields
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   return (
-    <section id='contact-us' name='contact-us' className='w-[100%] bg-[#6E7582] p-10'>
-      {/* Added fade-in animation for the entire form container */}
-      <motion.div 
-        className="max-w-xl mx-auto p-6 rounded-lg"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={containerVariants}
-      >
-        {/* Added slide-in animation for header */}
-        <motion.h2 
-          className="text-4xl font-bold mb-4 text-[#8c2b32] text-center"
-          variants={itemVariants}
-        >
-          Contact Us
-        </motion.h2>
-        
-        {/* Added fade-in animation for subtitle */}
-        <motion.p 
-          className="text-[#F8F8F5] text-lg mb-12 text-center"
-          variants={itemVariants}
-        >
-          Facing issues with our advocates?
-        </motion.p>
-
-        <motion.form 
-          onSubmit={handleSubmit} 
-          className="space-y-4"
+    // Page background is now mid-purple #8080d7
+    <section className="bg-[#8080d7] text-white">
+      <div className="px-4 sm:px-6 md:px-10 lg:px-20 xl:px-32 py-10">
+        <motion.div
+          className="w-full max-w-6xl mx-auto p-6 sm:p-8 rounded-2xl shadow-2xl bg-[#aad9d9] border border-[#99c2c2]"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
           variants={containerVariants}
         >
-          {/* Added individual animations for each form field */}
-          <motion.input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Your Name"
-            required
-            className="w-full px-4 py-2 border bg-[#bbbbbb] rounded focus:outline-none hover:bg-white"
+          <motion.h2
+            className="text-3xl sm:text-4xl font-bold mb-4 text-[#010922] text-center uppercase tracking-wide"
             variants={itemVariants}
-            whileFocus={{ scale: 1.02 }} // Added subtle scale on focus
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          />
-          <motion.input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Your Email"
-            required
-            className="w-full px-4 py-2 border bg-[#bbbbbb] rounded focus:outline-none focus:bg-white"
-            variants={itemVariants}
-            whileFocus={{ scale: 1.02 }} // Added subtle scale on focus
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          />
-          <motion.input
-            type="contact"
-            name="contact"
-            value={formData.contact}
-            onChange={handleChange}
-            placeholder="Your Contact no."
-            required
-            className="w-full px-4 py-2 border bg-[#bbbbbb] rounded focus:outline-none focus:bg-white"
-            variants={itemVariants}
-            whileFocus={{ scale: 1.02 }} // Added subtle scale on focus
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          />
-          <motion.input
-            type="text"
-            name="subject"
-            value={formData.subject}
-            onChange={handleChange}
-            placeholder="Subject"
-            className="w-full px-4 py-2 border bg-[#bbbbbb] rounded focus:outline-none focus:bg-white"
-            variants={itemVariants}
-            whileFocus={{ scale: 1.02 }} // Added subtle scale on focus
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          />
-          <motion.textarea
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-            placeholder="Your Message"
-            rows="4"
-            required
-            className="w-full px-4 py-2 border bg-[#bbbbbb] rounded focus:outline-none focus:bg-white"
-            variants={itemVariants}
-            whileFocus={{ scale: 1.02 }} // Added subtle scale on focus
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          />
-          {/* Added button animations with hover and tap effects */}
-          <motion.button
-            type="submit"
-            className="w-full bg-[#8c2b32] text-[#fff0d7] py-2 rounded hover:bg-[#621E23] cursor-pointer"
-            variants={itemVariants}
-            whileHover={{ scale: 1.02, y: -2 }} // Added lift effect on hover
-            whileTap={{ scale: 0.98 }} // Added press effect on click
-            transition={{ type: "spring", stiffness: 400, damping: 15 }}
-          > 
-            Send Message
-          </motion.button>
-        </motion.form>
-      </motion.div>
-      
-      {/* Toast Notification */}
-      <ToastContainer position="top-center" autoClose={3000} />
-    </section>
-  )
-}
+          >
+            Contact Us
+          </motion.h2>
 
-export default ContactUs
+          <motion.p
+            className="text-[#010922] text-sm sm:text-base md:text-lg mb-6 text-center"
+            variants={itemVariants}
+          >
+            Facing issues with our advocates? We’re here to help!
+          </motion.p>
+
+          <motion.form
+            onSubmit={handleSubmit}
+            className="space-y-5"
+            variants={containerVariants}
+          >
+            {['name', 'email', 'contact', 'subject'].map((field) => (
+              <motion.input
+                key={field}
+                type={field === 'email' ? 'email' : field === 'contact' ? 'tel' : 'text'}
+                name={field}
+                value={formData[field]}
+                onChange={handleChange}
+                placeholder={`Your ${field.charAt(0).toUpperCase() + field.slice(1)}`}
+                required
+                className="w-full px-4 py-3 text-[#010922] placeholder-gray-700 bg-[#F3F4F6] border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#010922] transition-all duration-200 hover:shadow-md hover:border-[#7aafa8]"
+                variants={itemVariants}
+                whileFocus={{ scale: 1.02 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              />
+            ))}
+
+            <motion.textarea
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              placeholder="Your Message"
+              rows="5"
+              required
+              className="w-full px-4 py-3 text-[#010922] placeholder-gray-700 bg-[#F3F4F6] border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#010922] resize-y transition-all duration-200 hover:shadow-md hover:border-[#7aafa8]"
+              variants={itemVariants}
+              whileFocus={{ scale: 1.02 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+            />
+
+            <motion.button
+              type="submit"
+              className="w-full bg-[#010922] text-white py-3 rounded-xl hover:bg-[#1A1F2E] transition-all duration-200 font-semibold text-lg tracking-wide"
+              variants={itemVariants}
+              whileHover={{ scale: 1.03, y: -2 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+            >
+              Send Message
+            </motion.button>
+          </motion.form>
+        </motion.div>
+      </div>
+
+      <ToastContainer position="top-center" autoClose={3000} theme="dark" />
+    </section>
+  );
+};
+
+export default ContactUs;

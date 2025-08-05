@@ -1,11 +1,6 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
-from chat.models import ChatMessage
-from bookingapi.models import Booking
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -22,6 +17,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         try:
+            from chat.models import ChatMessage       # moved here
+            from bookingapi.models import Booking     # moved here
+            from django.contrib.auth import get_user_model  # moved here
+            User = get_user_model()
+
             data = json.loads(text_data)
             message = data.get("message")
             sender_name = data.get("sender")
@@ -30,15 +30,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 print("⚠️ Missing message or sender")
                 return
 
-            # Fetch booking and sender objects
             booking = await self.get_booking(self.booking_id)
-            sender = await self.get_user_by_name(sender_name)
+            sender = await self.get_user_by_name(sender_name, User)
 
             if booking and sender:
-                # Save message
                 saved_msg = await self.save_message(booking, sender, message)
 
-                # Broadcast message to group
                 await self.channel_layer.group_send(
                     self.room_group_name,
                     {
@@ -63,13 +60,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_booking(self, booking_id):
+        from bookingapi.models import Booking  # moved here too
         try:
             return Booking.objects.filter(id=booking_id).first()
         except Booking.DoesNotExist:
             return None
 
     @database_sync_to_async
-    def get_user_by_name(self, name):
+    def get_user_by_name(self, name, User):
         try:
             return User.objects.filter(name=name).first()
         except User.DoesNotExist:
@@ -77,6 +75,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def save_message(self, booking, sender, message):
+        from chat.models import ChatMessage  # moved here too
         return ChatMessage.objects.create(
             booking=booking,
             sender=sender,

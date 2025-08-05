@@ -23,6 +23,8 @@ import AdminSignup from "./adminSection/AdminSignup.jsx";
 import ChatRoomWrapper from "./route/ChatRoomWrapper.jsx";
 import { AuthProvider } from "./common/AuthContext.jsx";
 import AdvocateWaiting from "./advocateSection/pages/AdvocateWaiting.jsx";
+import LawyerReviewSection from "./common/searchpage/LawyerReviewSection.jsx";
+import ManageSlots from "./advocateSection/pages/ManageSlots.jsx";
 
 
 const router = createBrowserRouter([
@@ -42,7 +44,6 @@ const router = createBrowserRouter([
       <div>
         <Navbar />
         <Outlet />
-        <WebsiteFeedbackSection />
         <Footer />
       </div>
     ),
@@ -114,6 +115,10 @@ const router = createBrowserRouter([
       {
         path: "waiting",
         element: <AdvocateWaiting />
+      },
+      {
+        path: "manageslots",
+        element: <ManageSlots />
       }
     ],
   },

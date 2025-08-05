@@ -40,7 +40,7 @@ class Review(models.Model):
     def __str__(self):
         return f"Review by {self.user.username} for {self.lawyer.user.username}: {self.rating} stars"
 
-# --- Signals to update Lawyer's average_rating and review_count ---
+
 class ReviewReply(models.Model):
     review = models.OneToOneField(
         Review,
@@ -65,7 +65,7 @@ class ReviewReply(models.Model):
     def __str__(self):
         return f"Reply by {self.lawyer.user.username} to review {self.review.id}"
 
-
+# --- Signals to update Lawyer's average_rating and review_count ---
 @receiver(post_save, sender=Review)
 def update_lawyer_rating_on_save(sender, instance, **kwargs):
     instance.lawyer.update_average_rating()
