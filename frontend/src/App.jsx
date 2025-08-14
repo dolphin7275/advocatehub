@@ -18,13 +18,17 @@ import AdvocateCard from "./common/searchpage/AdvocateCard.jsx";
 import AdvocateInfo from "./adminSection/AdvocateInfo.jsx";
 import { AdvocateBookingHistory } from "./advocateSection/pages/AdvocateBookingHistory.jsx";
 import AdvocateProfile from "./advocateSection/pages/AdvocateProfile.jsx";
-import WebsiteFeedbackSection from "./common/homepage/WebsiteFeedbackSection.jsx";
+// import WebsiteFeedbackSection from "./common/homepage/WebsiteFeedbackSection.jsx";
+import TermsAndConditions from "./common/homepage/TermsAndConditions.jsx";
+import PrivacyPolicy from "./common/homepage/PrivacyPolicy.jsx";
+import FAQs from "./common/homepage/FAQs.jsx";
 import AdminSignup from "./adminSection/AdminSignup.jsx";
 import ChatRoomWrapper from "./route/ChatRoomWrapper.jsx";
 import { AuthProvider } from "./common/AuthContext.jsx";
 import AdvocateWaiting from "./advocateSection/pages/AdvocateWaiting.jsx";
-import LawyerReviewSection from "./common/searchpage/LawyerReviewSection.jsx";
+// import LawyerReviewSection from "./common/searchpage/LawyerReviewSection.jsx";
 import ManageSlots from "./advocateSection/pages/ManageSlots.jsx";
+import ClientProfile from "./clientSection/pages/ClientProfile.jsx";
 
 
 const router = createBrowserRouter([
@@ -80,6 +84,10 @@ const router = createBrowserRouter([
         path: "dashboard",
         element: <ClientDashboard />,
       },
+      {
+        path: "profile",
+        element: <ClientProfile />,
+      },
     ],
   },
   {
@@ -119,7 +127,8 @@ const router = createBrowserRouter([
       {
         path: "manageslots",
         element: <ManageSlots />
-      }
+      },
+      
     ],
   },
   {
@@ -153,6 +162,36 @@ const router = createBrowserRouter([
   path: "chat/:bookingId",
   element: <ChatRoomWrapper />,
   },
+  {
+    path: "/TermsAndConditions",
+    element: (
+    <div>
+        <Navbar />
+        <TermsAndConditions />
+        <Footer/>
+      </div>
+       )
+     },
+     {
+      path: "/PrivacyPolicy",
+      element: (
+        <div>
+          <Navbar />
+          <PrivacyPolicy />
+          <Footer />
+        </div>
+      )
+     },
+     {
+      path: "/FAQs",
+      element: (
+        <div>
+          <Navbar />
+          <FAQs />
+          <Footer />
+        </div>
+      )
+     }
 ]);
 
 function App() {

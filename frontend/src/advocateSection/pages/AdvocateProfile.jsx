@@ -1,213 +1,368 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import api from '../../apiCalls/axios.js';
+import { motion } from 'framer-motion';
+
+import logoIcon from "../../assets/images/logo_icon.png";
+import logoText from "../../assets/images/logo-text.png";
+import profileImage from "../../assets/images/avatarImage.jpg";
 
 console.log("📦 Loaded: AdvocateProfile.jsx");
 
+const statesInIndia = [
+  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+  "Delhi", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand",
+  "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur",
+  "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan",
+  "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh",
+  "Uttarakhand", "West Bengal"
+];
+
+const languagesList = [
+  "English", "Hindi", "Tamil", "Telugu", "Kannada", "Marathi", "Gujarati", "Bengali", "Urdu", "Punjabi"
+];
+
+const PencilIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+    strokeLinejoin="round" className="inline-block mr-1">
+    <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+    <path d="M15 5l4 4" />
+  </svg>
+);
+
 const AdvocateProfile = () => {
-  const { id } = useParams();
-  const [lawyer, setLawyer] = useState(null);
-  const [showBooking, setShowBooking] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const [mode, setMode] = useState('Meeting');
-  const [location, setLocation] = useState('');
-  const [duration, setDuration] = useState(30);
-  const [date, setDate] = useState('');
-  const [fromTime, setFromTime] = useState('');
+  const [userData, setUserData] = useState({
+    firstName: "Sara",
+    lastName: "Amid",
+    bio: "Law officer",
+    phone: "0374376XXXX",
+    email: "saraamid1998@gmail.com",
+    country: "Lucknow, India",
+    experience: "10 Years",
+    feeRange: "35,000-60,000",
+    houseNo: "123",
+    landmark: "Near City Mall",
+    locality: "Hazratganj",
+    pincode: "226001",
+    state: "Uttar Pradesh",
+    city: "Lucknow",
+  });
+  const [documentTypes, setDocumentTypes] = useState({});
+  const [documentPreviews, setDocumentPreviews] = useState({});
 
-  useEffect(() => {
-    const fetchLawyer = async () => {
-      try {
-        const response = await api.get(`/userapi/lawyer/${id}/`);
-        setLawyer(response.data);
-      } catch (error) {
-        console.error('Error fetching lawyer:', error);
-      }
-    };
-    fetchLawyer();
-  }, [id]);
-
-  if (!lawyer) return <div className="p-4">Loading...</div>;
-
-  const RatingBar = ({ label, value, color }) => (
-    <div className="flex items-center justify-between">
-      <span className="w-24 text-sm">{label}</span>
-      <div className="w-full ml-2 bg-gray-200 h-2 rounded-full overflow-hidden">
-        <div className={`${color} h-2`} style={{ width: `${value}%` }}></div>
-      </div>
-    </div>
-  );
-
-  const handleBooking = async () => {
-    if (!date || !fromTime) {
-      alert('Please select a valid slot');
-      return;
-    }
-
-    const localDate = new Date(`${date}T${fromTime}`);
-    const utcISOString = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000).toISOString();
-
+useEffect(() => {
+  const fetchUserData = async () => {
     try {
-      await api.post('/userapi/book/', {
-        lawyer_id: id,
-        mode,
-        location,
-        duration,
-        scheduled_for: utcISOString,
+      const res = await api.get("/userapi/me/", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access")}`
+        }
       });
-      alert('Booking Created!');
-      setShowBooking(false);
-    } catch (err) {
-      const msg = err.response?.data?.error || 'Booking Failed';
-      alert(msg);
+
+      const apiData = res.data;
+
+      // 🔹 Full name ko split karne ka logic
+      let firstName = apiData.first_name || "";
+      let lastName = apiData.last_name || "";
+
+      if ((!firstName && !lastName) && apiData.name) {
+        const nameParts = apiData.name.trim().split(" ");
+        firstName = nameParts[0] || "";
+        lastName = nameParts.slice(1).join(" ") || "";
+      }
+
+      setUserData({
+        firstName: firstName,
+        lastName: lastName,
+        profession: apiData.profession || '',
+        phone: apiData.phone || '',
+        altPhone: apiData.alt_phone || '',
+        email: apiData.email || '',
+        password: '',
+        confirmPassword: '',
+        dob: apiData.details?.dob || '',
+        languages: apiData.details?.language ? [apiData.details.language] : [],
+        houseNo: apiData.details?.house_no || '',
+        locality: apiData.details?.locality || '',
+        landmark: apiData.details?.landmark || '',
+        pincode: apiData.details?.pincode || '',
+        state: apiData.details?.state || '',
+        city: apiData.details?.city || '',
+        profilePic: apiData.profile || profileImage
+      });
+
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  fetchUserData();
+}, []);
+
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUserData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleEditToggle = () => {
+    setIsEditing((prev) => !prev);
+  };
+
+  const handleFileUpload = (doc) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".pdf,.jpg,.jpeg,.png";
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const ext = file.name.split(".").pop().toUpperCase();
+        const fileURL = URL.createObjectURL(file);
+        setDocumentTypes((prev) => ({
+          ...prev,
+          [doc]: { name: file.name, type: ext }
+        }));
+        setDocumentPreviews((prev) => ({
+          ...prev,
+          [doc]: fileURL
+        }));
+      }
+    };
+    input.click();
+  };
+
   return (
-    <div className="max-w-4xl mx-auto mt-8 bg-white rounded-lg shadow p-6">
-      {/* Profile Info */}
-      <div className="flex flex-col md:flex-row md:items-center md:space-x-6">
-        <img
-          src={lawyer.user?.profile || '/default-profile.jpg'}
-          alt="Lawyer"
-          className="w-32 h-32 rounded-full object-cover"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = '/default-profile.jpg';
-          }}
-        />
-        <div className="mt-4 md:mt-0">
-          <h2 className="text-2xl font-semibold">{lawyer.user?.name}</h2>
-          <p className="text-gray-600">
-            {Array.isArray(lawyer.case_types) ? lawyer.case_types.join(', ') : lawyer.case_types}
-          </p>
-          <p className="text-gray-600 mt-1">Location: {lawyer.location}</p>
-          <p className="text-gray-600">Consultation Fee: ₹{lawyer.price}</p>
-          <p className="text-gray-600">Experience: {lawyer.experience} years</p>
+    <div className="min-h-screen font-inter bg-gradient-to-br from-[#010922] to-[#8080d7] text-[#010922]">
+      <motion.header
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="bg-[#aad9d9] shadow-md py-5 px-8 flex justify-between items-center"
+      >
+        <div className="flex items-center space-x-3">
+          <img src={logoIcon} alt="Logo Icon" className="h-11 w-11 rounded-full" />
+          <img src={logoText} alt="Logo Text" className="h-6" />
         </div>
-      </div>
-
-
-      {/* 📄 ABOUT SECTION */}
-      <div className="mt-6 bg-[#f2d9b1] p-4 rounded shadow">
-          <h3 className="text-xl font-semibold mb-2">About Me</h3>
-          <p className="text-gray-800 text-sm leading-relaxed">
-            {lawyer.about ||
-              `My name is ${lawyer.user?.name}. I have been practicing law for over 10 years, specializing in criminal defense, family law matters, and civil disputes. I hold an LLB and have completed my Master’s in Criminal Law from Mumbai University. My journey began with a deep commitment to justice and helping those who are unaware of their rights...`}
-          </p>
-      </div>
-
-      {/* Ratings */}
-      <div className="mt-6 bg-yellow-50 p-4 rounded shadow">
-        <h2 className="text-xl font-semibold mb-2">Rating & Reviews</h2>
-        <div className="flex items-center space-x-2 mb-1">
-          <span className="text-3xl font-bold">4.81</span>
-          <div className="text-yellow-500 text-lg">★★★★☆</div>
-          <span className="text-sm text-gray-600">45 clients</span>
-        </div>
-        <div className="space-y-1 mt-3">
-          <RatingBar label="Excellent" value={90} color="bg-green-800" />
-          <RatingBar label="Good" value={75} color="bg-cyan-400" />
-          <RatingBar label="Average" value={60} color="bg-yellow-400" />
-          <RatingBar label="Below Average" value={35} color="bg-orange-400" />
-          <RatingBar label="Poor" value={15} color="bg-red-600" />
-        </div>
-      </div>
-
-      {/* Book Button */}
-      <div className="text-center mt-6">
-        <button
-          className="bg-blue-700 text-white px-6 py-2 rounded-full font-semibold shadow hover:bg-blue-800 transition"
-          onClick={() => setShowBooking(true)}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="bg-[#8080d7] hover:bg-[#6f6fc8] text-white font-bold py-2.5 px-5 rounded-lg shadow-lg transition duration-300"
         >
-          Book an Appointment
-        </button>
-      </div>
+          Log Out
+        </motion.button>
+      </motion.header>
 
-      {/* Booking Modal */}
-      {showBooking && (
-        <div className="mt-6 bg-black text-white p-6 rounded-lg shadow-xl">
-          <h2 className="text-xl font-bold mb-4">Schedule an appointment</h2>
+      <main className="container mx-auto px-8 py-10 max-w-7xl">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+          className="flex justify-center mb-10"
+        >
+          <button className="bg-[#010922] hover:bg-[#192240] text-white text-2xl font-extrabold py-4 px-10 rounded-xl shadow-xl transition duration-300">
+            My Profile
+          </button>
+        </motion.div>
 
-          <div className="mb-2">
-            <label className="block mb-1">Select Mode</label>
-            <select
-              className="w-full text-black p-2 rounded"
-              value={mode}
-              onChange={(e) => setMode(e.target.value)}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="bg-gradient-to-r from-[#aad9d9] to-[#8080d7] p-8 rounded-2xl shadow-xl mb-10 flex items-center relative border-2 border-[#aad9d9]"
+        >
+          <img
+            src={profileImage}
+            alt="Profile"
+            className="w-36 h-36 rounded-full object-cover mr-8 border-4 border-white shadow-lg"
+          />
+          <div>
+            <h2 className="text-4xl font-extrabold text-[#010922] mb-1">
+              {userData.firstName} {userData.lastName}
+            </h2>
+            <p className="text-white text-lg mb-1">Criminal Law</p>
+            <p className="text-[#010922] text-base">English</p>
+          </div>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            className="absolute top-6 right-6 bg-white text-[#8080d7] py-2 px-4 rounded-lg shadow-md flex items-center space-x-2 text-base font-semibold transition duration-300"
+            onClick={handleEditToggle}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
             >
-              <option value="Meeting">Meeting</option>
-              <option value="online">Online</option>
-              <option value="physical">Physical</option>
-            </select>
-          </div>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d={
+                  isEditing
+                    ? "M5 13l4 4L19 7"
+                    : "M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                }
+              />
+            </svg>
+            <span>{isEditing ? "Save" : "Edit"}</span>
+          </motion.button>
+        </motion.div>
 
-          <div className="mb-2">
-            <label className="block mb-1">Add Location</label>
-            <input
-              type="text"
-              className="w-full text-black p-2 rounded"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="Enter location"
-            />
-          </div>
-
-          <div className="mb-2 flex space-x-2">
-            {[30, 45, 60].map((d) => (
-              <button
-                key={d}
-                onClick={() => setDuration(d)}
-                className={`px-3 py-1 rounded ${duration === d ? 'bg-white text-black' : 'bg-gray-600'}`}
-              >
-                {d} min
-              </button>
+        {/* Personal Information */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="bg-white p-8 rounded-2xl shadow-xl mb-10 border-2 border-[#aad9d9]"
+        >
+          <h3 className="text-2xl font-bold text-[#010922] mb-5 pb-3 border-b-2 border-[#8080d7]">
+            Personal Information
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { label: "First Name", name: "firstName" },
+              { label: "Last Name", name: "lastName" },
+              { label: "Bio", name: "bio" },
+              { label: "Phone", name: "phone" },
+              { label: "Email", name: "email" },
+              { label: "Country", name: "country" },
+              { label: "Experience", name: "experience" },
+            ].map((item, i) => (
+              <div key={i}>
+                <p className="text-[#8080d7] text-base mb-1">{item.label}</p>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name={item.name}
+                    value={userData[item.name]}
+                    onChange={handleInputChange}
+                    className="border border-[#8080d7] rounded-md px-3 py-2 w-full"
+                  />
+                ) : (
+                  <p className="text-[#010922] font-medium text-lg">{userData[item.name]}</p>
+                )}
+              </div>
             ))}
           </div>
+        </motion.div>
 
-          <div className="mb-4">
-            <label className="block mb-1">Available Slots</label>
-            <select
-              className="w-full text-black p-2 rounded"
-              onChange={(e) => {
-                const [d, t] = e.target.value.split(', ');
-                setDate(d);
-                setFromTime(t);
-              }}
-            >
-              <option value="">Select a slot</option>
-              {lawyer.available_slots &&
-                Object.entries(lawyer.available_slots).map(([d, times]) =>
-                  times.map((t) => (
-                    <option key={`${d}-${t}`} value={`${d}, ${t}`}>
-                      {new Date(`${d}T${t}`).toLocaleString('en-IN', {
-                        dateStyle: 'long',
-                        timeStyle: 'short',
-                      })}
-                    </option>
-                  ))
+        {/* Address Information */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.35 }}
+          className="bg-white p-8 rounded-2xl shadow-xl mb-10 border-2 border-[#aad9d9]"
+        >
+          <h3 className="text-2xl font-bold text-[#010922] mb-5 pb-3 border-b-2 border-[#8080d7]">
+            Address Information
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { label: "House No", name: "houseNo" },
+              { label: "Landmark", name: "landmark" },
+              { label: "Locality", name: "locality" },
+              { label: "Pincode", name: "pincode" },
+              { label: "State", name: "state" },
+              { label: "City", name: "city" },
+            ].map((item, i) => (
+              <div key={i}>
+                <p className="text-[#8080d7] text-base mb-1">{item.label}</p>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name={item.name}
+                    value={userData[item.name]}
+                    onChange={handleInputChange}
+                    className="border border-[#8080d7] rounded-md px-3 py-2 w-full"
+                  />
+                ) : (
+                  <p className="text-[#010922] font-medium text-lg">{userData[item.name]}</p>
                 )}
-            </select>
+              </div>
+            ))}
           </div>
+        </motion.div>
 
-          <div className="flex justify-between">
-            <button
-              onClick={() => setShowBooking(false)}
-              className="bg-yellow-500 text-black px-6 py-2 rounded"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleBooking}
-              className="bg-blue-600 px-6 py-2 rounded"
-            >
-              Create
-            </button>
+        {/* Update Documents */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="bg-white p-8 rounded-2xl shadow-xl mb-10 border-2 border-[#aad9d9]"
+        >
+          <h3 className="text-2xl font-bold text-[#010922] mb-5 pb-3 border-b-2 border-[#8080d7]">
+            Update Documents
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {["Bar Council Certificate", "Aadhaar Card", "Pan Card", "COP Certificate"].map(
+              (doc, idx) => (
+                <div
+                  key={idx}
+                  className="flex flex-col space-y-3 p-4 bg-[#aad9d9] rounded-lg border border-[#8080d7]"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#010922] font-medium text-base">
+                      {doc}
+                      {documentTypes[doc] && (
+                        <span className="ml-2 text-sm text-[#8080d7] font-semibold">
+                          [{documentTypes[doc].type}] - {documentTypes[doc].name}
+                        </span>
+                      )}
+                    </span>
+                    <button
+                      className="bg-[#010922] hover:bg-[#192240] text-white font-bold py-2 px-4 rounded-md shadow-md text-sm transition duration-300 hover:scale-105"
+                      onClick={() => handleFileUpload(doc)}
+                    >
+                      Upload
+                    </button>
+                  </div>
+                  {documentPreviews[doc] && (
+                    <div className="flex items-center space-x-3">
+                      <button
+                        className="bg-[#8080d7] text-white text-xs px-3 py-1 rounded shadow hover:bg-[#6f6fc8]"
+                        onClick={() => {
+                          const viewer = document.getElementById(`preview-${idx}`);
+                          viewer.style.display =
+                            viewer.style.display === "none" ? "block" : "none";
+                        }}
+                      >
+                        View
+                      </button>
+                      <div id={`preview-${idx}`} style={{ display: "none" }}>
+                        {documentTypes[doc]?.type === "PDF" ? (
+                          <iframe
+                            src={documentPreviews[doc]}
+                            title="PDF Preview"
+                            className="w-40 h-40 border"
+                          ></iframe>
+                        ) : (
+                          <img
+                            src={documentPreviews[doc]}
+                            alt="Preview"
+                            className="w-20 h-20 object-cover border rounded"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )
+            )}
           </div>
-        </div>
-      )}
+        </motion.div>
+      </main>
     </div>
   );
-};
+}
 
 export default AdvocateProfile;
+
+

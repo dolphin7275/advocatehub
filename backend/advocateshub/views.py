@@ -5,13 +5,13 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import User
+from .models import User,ContactQuery
 from clientapi.models import Client
 from lawyerapi.models import Lawyer
 from bookingapi.models import Booking
 from chat.models import ChatMessage
 from videosession.models import VideoSession
-from .serializers import RegisterSerializer, LawyerSerializer, BookingSerializer,ChatMessageSerializer
+from .serializers import RegisterSerializer, LawyerSerializer, BookingSerializer,ChatMessageSerializer,ContactQuerySerializer
 from datetime import datetime
 from rest_framework.serializers import ValidationError
 from rest_framework.decorators import api_view, permission_classes
@@ -706,3 +706,13 @@ class VideoTokenCreateAPIView(APIView):
 
         except Booking.DoesNotExist:
             return Response({"detail": "Booking not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+
+# ContactView
+class ContactQueryView(APIView):
+    def post(self, request):
+        serializer = ContactQuerySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'success': True, 'message': 'Query submitted.'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

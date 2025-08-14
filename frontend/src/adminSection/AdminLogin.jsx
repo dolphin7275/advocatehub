@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css';
 import api from "../apiCalls/axios";
 
-const AdminLogin = () => {
+
+export default function AdminLogin() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -27,13 +30,16 @@ const AdminLogin = () => {
       const { role, name } = profileRes.data;
 
       if (role !== 'admin') {
-        setError('You are not authorized as admin.');
+        setError('You are not authorized as an admin.');
+        
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
         return;
       }
 
       localStorage.setItem('role', 'admin');
       localStorage.setItem('adminName', name);
-      alert(`Welcome, admin ${name}!`);
+      
       navigate('/admin/dashboard/');
     } catch (err) {
       console.error(err);
@@ -44,92 +50,94 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#6E7582] text-white">
-      {/* Left Section */}
-      <div className="flex-1 flex flex-col justify-center items-center p-8">
+    
+    <div className="flex flex-col md:flex-row lg:flex-row min-h-screen bg-[#8080d7] text-[#010922] font-sans">
+      
+      <div className="w-full md:w-full lg:w-1/2 flex justify-center items-center p-8 max-md:py-12">
         <div className="text-center">
-          <h1 className="text-5xl font-extrabold">
-            <span className="text-black">ADVOCATE</span>{' '}
-            <span className="text-[#8C2B32]">HUB</span>
+          <h1 className="text-4xl md:text-5xl font-extrabold">
+            
+            <span className="text-white">ADVOCATE</span>{' '}
+            <span className="text-[#010922]">HUB</span>
           </h1>
-          <p className="mt-4 text-white text-lg italic">Seek for the truth</p>
+          
+          <p className="mt-4 text-white text-md md:text-lg italic">Seek for the truth</p>
         </div>
       </div>
 
-      {/* Right Section */}
-      <div className="flex-1 flex flex-col justify-center p-12 md:p-20 bg-[#6E7582]">
-        <form
-          onSubmit={handleLogin}
-          className="w-full max-w-md mx-auto bg-transparent"
-        >
-          <h2 className="text-3xl font-bold mb-8 text-[#8C2B32]">
-            ADMIN LOGIN
-          </h2>
+      
+      
+      <div className="w-full md:w-full lg:w-1/2 flex justify-center items-center px-6 py-10 md:px-12 lg:p-20 bg-[#8080d7]">
+        
+        <div className="w-full max-w-md mx-auto bg-[#aad9d9] p-6 sm:p-8 rounded-2xl shadow-2xl border border-gray-300">
+          <form onSubmit={handleLogin} className="space-y-5">
+            
+            <h2 className="text-2xl md:text-3xl font-bold mb-8 text-[#010922] text-center">
+              ADMIN LOGIN
+            </h2>
 
-          <div className="mb-5">
-            <label className="block font-semibold mb-2">Email</label>
-            <input
-              type="text"
-              placeholder="username@gmail.com"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              className="w-full p-3 rounded-md bg-white text-black shadow-md focus:outline-none"
-            />
-          </div>
+            
+            <div>
+              <label className="block font-semibold mb-2 text-[#010922]">Email</label>
+              <input
+                type="text"
+                placeholder="username@gmail.com"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                
+                className="w-full px-4 py-3 text-[#010922] placeholder-gray-700 bg-[#F3F4F6] border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#010922] transition-all duration-200 hover:shadow-md hover:border-[#7aafa8]"
+              />
+            </div>
 
-          <div className="mb-5">
-            <label className="block font-semibold mb-2">Password</label>
-            <input
-              type="password"
-              placeholder=""
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full p-3 rounded-md bg-white text-black shadow-md focus:outline-none"
-            />
-          </div>
+            
+            <div>
+              <label className="block font-semibold mb-2 text-[#010922]">Password</label>
+              <input
+                type="password"
+                placeholder="********"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                
+                className="w-full px-4 py-3 text-[#010922] placeholder-gray-700 bg-[#F3F4F6] border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#010922] transition-all duration-200 hover:shadow-md hover:border-[#7aafa8]"
+              />
+            </div>
 
-          <div className="text-right text-sm mb-4">
-            <a href="/forgot-password" className="text-white hover:underline">
-              Forgot Password?
-            </a>
-          </div>
+            
+            <div className="text-right text-sm">
+              <a href="/forgot-password" className="text-[#010922] hover:underline">
+                Forgot Password?
+              </a>
+            </div>
 
-          {error && (
-            <div className="text-red-300 text-sm font-medium mb-4">{error}</div>
-          )}
+                       {error && <p className="text-red-600 text-sm mb-4">{error}</p>}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-2 bg-[#8C2B32] hover:bg-red-800 text-white rounded-md font-bold text-lg transition"
-          >
-            {loading ? 'Logging in...' : 'LOGIN'}
-          </button>
-
-          <div className="mt-8 text-center text-sm">
-  <p className="text-base font-medium">Don't have an account?</p>
-  <div className="mt-4 space-x-6">
-    <a
-      href="/client/signup"
-      className="text-[#8C2B32] text-xl font-bold"
-    >
-      Sign up as Client
-    </a>
-    <a
-      href="/advocate/signup"
-      className="text-[#8C2B32] text-xl font-bold"
-    >
-      Sign up as Advocate
-    </a>
-  </div>
-</div>
-
-        </form>
+            
+            <button
+              type="submit"
+              disabled={loading}
+              
+              className="w-full py-3 bg-[#010922] hover:bg-[#1A1F2E] text-white rounded-xl font-semibold transition-all duration-200 text-lg tracking-wide disabled:bg-gray-400"
+            >
+              {loading ? 'Logging in...' : 'LOGIN'}
+            </button>
+            
+            
+            <div className="mt-8 text-center text-sm text-[#010922]">
+              <p className="text-base font-medium">Don't have an account?</p>
+              <div className="mt-4 flex flex-col sm:flex-row justify-center gap-3">
+                <a href="/client/signup" className="text-[#010922] text-sm font-medium hover:underline hover:text-[#1A1F2E] transition-colors duration-200">
+                  Sign up as Client
+                </a>
+                <a href="/advocate/signup" className="text-[#010922] text-sm font-medium hover:underline hover:text-[#1A1F2E] transition-colors duration-200">
+                  Sign up as Advocate
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
-};
-
-export default AdminLogin;
+}

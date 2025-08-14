@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import Assets from "../../assets/assets.js";
 
@@ -6,12 +6,26 @@ const Navbar = () => {
   const [openC, setOpenC] = useState(false);
   const [openA, setOpenA] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check login status on component mount
+    const token = localStorage.getItem("access");
+    setIsLoggedIn(!!token);
+  }, []);
 
   const closeAllMenus = () => {
     setOpenC(false);
     setOpenA(false);
     setMenuOpen(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("access");
+    localStorage.removeItem("refresh");
+    setIsLoggedIn(false);
+    navigate("/"); // Redirect to home
   };
 
   return (
@@ -24,10 +38,11 @@ const Navbar = () => {
             closeAllMenus();
           }}
         >
-          <img className="w-12 h-12 mt-2 ml-2" src={Assets.logoIcon} alt="logo" />
-          <img className="h-8 mt-4" src={Assets.logoText} alt="text" />
+          <img className="w-50 mt-2 ml-2" src={Assets.logoText} alt="logo" />
+          {/* <img className="h-8 mt-4" src={Assets.logoText} alt="text" /> */}
         </div>
 
+        {/* Mobile Menu Button */}
         <div className="lg:hidden">
           <button
             onClick={() => {
@@ -53,7 +68,7 @@ const Navbar = () => {
           </button>
         </div>
 
-       
+        {/* Menu */}
         <div
           className={`${
             menuOpen
@@ -82,79 +97,89 @@ const Navbar = () => {
             </li>
           </ul>
 
-          
-          
-          
           <div className="flex flex-col gap-3 w-full lg:w-auto px-4 lg:px-0 justify-center lg:flex-row lg:gap-4">
-           
-            <div className="relative w-full sm:w-auto">
+            {isLoggedIn ? (
+              // 🔹 If logged in → Logout button
               <button
-                onClick={() => {
-                  setOpenC(!openC);
-                  setOpenA(false);
-                }}
-                className="bg-[#aad9d9] text-[#010922] text-md font-semibold px-10 py-2 rounded-md hover:scale-105 transition-transform duration-200 cursor-pointer w-full text-center"
+                onClick={handleLogout}
+                className="bg-red-500 text-white text-md font-semibold px-6 py-2 rounded-md hover:bg-red-600 transition-transform duration-200 w-full text-center"
               >
-                CLIENT
+                Logout
               </button>
-              {openC && (
-                <div className="absolute top-full left-0 mt-2 bg-[#aad9d9] rounded-md shadow-lg z-10 w-full sm:w-36 p-2">
+            ) : (
+              // 🔹 If not logged in → Show Client & Advocate buttons
+              <>
+                {/* CLIENT */}
+                <div className="relative w-full sm:w-auto">
                   <button
                     onClick={() => {
-                      navigate("/client/signup");
-                      closeAllMenus();
+                      setOpenC(!openC);
+                      setOpenA(false);
                     }}
-                    className="block px-4 py-2 font-semibold text-left text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
+                    className="bg-[#aad9d9] text-[#010922] text-md font-semibold px-10 py-2 rounded-md hover:scale-105 transition-transform duration-200 cursor-pointer w-full text-center"
                   >
-                    SignUp
+                    CLIENT
                   </button>
-                  <button
-                    onClick={() => {
-                      navigate("/client/login");
-                      closeAllMenus();
-                    }}
-                    className="block px-4 py-2 font-semibold text-left text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
-                  >
-                    Login
-                  </button>
+                  {openC && (
+                    <div className="absolute top-full left-0 mt-2 bg-[#aad9d9] rounded-md shadow-lg z-10 w-full sm:w-36 p-2">
+                      <button
+                        onClick={() => {
+                          navigate("/client/signup");
+                          closeAllMenus();
+                        }}
+                        className="block px-4 py-2 font-semibold text-left text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
+                      >
+                        SignUp
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigate("/client/login");
+                          closeAllMenus();
+                        }}
+                        className="block px-4 py-2 font-semibold text-left text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
+                      >
+                        Login
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-           
-            <div className="relative w-full sm:w-auto">
-              <button
-                onClick={() => {
-                  setOpenA(!openA);
-                  setOpenC(false);
-                }}
-                className="bg-[#aad9d9] text-[#010922] text-md font-semibold px-6 py-2 rounded-md cursor-pointer hover:scale-105 transition-transform duration-200 w-full text-center"
-              >
-                ADVOCATE
-              </button>
-              {openA && (
-                <div className="absolute top-full left-0 mt-2 bg-[#aad9d9] shadow-lg rounded-md p-2 z-20 w-full sm:w-36">
+                {/* ADVOCATE */}
+                <div className="relative w-full sm:w-auto">
                   <button
                     onClick={() => {
-                      navigate("/advocate/signup");
-                      closeAllMenus();
+                      setOpenA(!openA);
+                      setOpenC(false);
                     }}
-                    className="block px-4 py-2 font-semibold text-left text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
+                    className="bg-[#aad9d9] text-[#010922] text-md font-semibold px-6 py-2 rounded-md cursor-pointer hover:scale-105 transition-transform duration-200 w-full text-center"
                   >
-                    SignUp
+                    ADVOCATE
                   </button>
-                  <button
-                    onClick={() => {
-                      navigate("/advocate/login");
-                      closeAllMenus();
-                    }}
-                    className="block px-4 py-2 font-semibold text-left text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
-                  >
-                    Login
-                  </button>
+                  {openA && (
+                    <div className="absolute top-full left-0 mt-2 bg-[#aad9d9] shadow-lg rounded-md p-2 z-20 w-full sm:w-36">
+                      <button
+                        onClick={() => {
+                          navigate("/advocate/signup");
+                          closeAllMenus();
+                        }}
+                        className="block px-4 py-2 font-semibold text-left text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
+                      >
+                        SignUp
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigate("/advocate/login");
+                          closeAllMenus();
+                        }}
+                        className="block px-4 py-2 font-semibold text-left text-[#010922] hover:bg-[#010922] hover:text-[#F8F8F5] rounded-sm cursor-pointer w-full transition-colors duration-200"
+                      >
+                        Login
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </>
+            )}
           </div>
         </div>
       </div>

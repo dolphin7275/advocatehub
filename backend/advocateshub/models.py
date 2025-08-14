@@ -20,3 +20,14 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.username} ({self.role})"
+    
+class ContactQuery(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    contact = models.CharField(max_length=50)
+    subject = models.CharField(max_length=150, blank=True)
+    message = models.TextField()
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
+    def _str_(self):
+        return f"{self.name}-{self.email}"

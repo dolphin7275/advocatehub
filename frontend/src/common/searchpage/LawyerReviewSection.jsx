@@ -48,7 +48,7 @@ function LawyerReviewSection() {
   };
 
   return (
-    <div className="bg-[#C4A552] rounded-xl shadow-xl p-6 mt-8 text-[#F8F8F5]">
+    <div className="bg-[#aad9d9] rounded-xl shadow-xl p-6 mt-8 text-[#F8F8F5]">
       <h2 className="text-3xl font-bold text-[#1A1F2B] mb-6 text-center">Client Reviews</h2>
 
       {/* Review Form */}

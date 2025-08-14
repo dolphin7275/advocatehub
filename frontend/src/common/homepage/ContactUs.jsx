@@ -20,10 +20,28 @@ const ContactUs = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
-    toast.success('Your message has been sent!');
-    setFormData({ name: '', email: '', contact: '', subject: '', message: '' });
+  
+    try {
+      const response = await fetch('http://localhost:8000/userapi/contact-queries/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      if (response.ok) {
+        toast.success('Your message has been sent!');
+        setFormData({ name: '', email: '', contact: '', subject: '', message: '' });
+      } else {
+        toast.error('Failed to send message. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error submitting contact form:', error);
+      toast.error('Server error. Please try again later.');
+    }
   };
 
   const containerVariants = {

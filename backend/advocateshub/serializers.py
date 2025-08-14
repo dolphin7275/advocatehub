@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User,ContactQuery
 from clientapi.models import Client
 from lawyerapi.models import Lawyer
 from bookingapi.models import Booking
@@ -160,3 +160,8 @@ class VideoSessionSerializer(serializers.ModelSerializer):
         video_session = VideoSession.objects.create(**validated_data)
         video_session.participants.set(participants)
         return video_session
+    
+class ContactQuerySerializer(serializers.ModelSerializer):
+    class Meta:
+        model=ContactQuery
+        fields=['id','name','email','contact','subject','message']

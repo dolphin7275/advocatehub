@@ -23,7 +23,8 @@ from .views import (
     # VideoChatAPIView
     VideoTokenCreateAPIView,VideoTokenRetrieveAPIView,
 
-    
+    # contact 
+    ContactQueryView
 )
 
 
@@ -70,6 +71,11 @@ urlpatterns = [
     #videosession
     path('video/token/', VideoTokenCreateAPIView.as_view(), name='post_video_token'),
     path('video/token/<int:booking_id>/', VideoTokenRetrieveAPIView.as_view(), name='get_video_token'),
+
+    #contact
+    # path('contact/', ContactQueryView.as_view(), name='contact-query')
+    path('contact-queries/', ContactQueryView.as_view(), name='contact-query')
+
 
 ]
 
